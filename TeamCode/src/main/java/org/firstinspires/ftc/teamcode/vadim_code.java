@@ -53,10 +53,10 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 @TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
 @Disabled
-public class PushbotTeleopTank_Iterative extends OpMode{
+public class vadim_code extends OpMode{
 
     /* Declare OpMode members. */
-    org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
+    HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
                                                          // could also use HardwarePushbotMatrix class.
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
@@ -94,15 +94,8 @@ public class PushbotTeleopTank_Iterative extends OpMode{
      */
     @Override
     public void loop() {
-        double left;
-        double right;
-
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
-
-        robot.leftDrive.setPower(left);
-        robot.rightDrive.setPower(right);
+        boolean x = gamepad2.x;
+        boolean b = gamepad2.b;
 
         // Use gamepad left & right Bumpers to open and close the claw
         if (gamepad1.right_bumper)
@@ -112,21 +105,15 @@ public class PushbotTeleopTank_Iterative extends OpMode{
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-        robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
+        if(x)
+            robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
         robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
-        // Use gamepad buttons to move the arm up (Y) and down (A)
-        if (gamepad1.y)
-            robot.leftArm.setPower(robot.ARM_UP_POWER);
-        else if (gamepad1.a)
-            robot.leftArm.setPower(robot.ARM_DOWN_POWER);
-        else
-            robot.leftArm.setPower(0.0);
+
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw", clawOffset);
-        telemetry.addData("left", left);
-        telemetry.addData("right", right);
+
     }
 
     /*
