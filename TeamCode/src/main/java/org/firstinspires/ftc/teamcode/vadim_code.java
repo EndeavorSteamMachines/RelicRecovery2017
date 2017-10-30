@@ -97,18 +97,13 @@ public class vadim_code extends OpMode{
         boolean x = gamepad2.x;
         boolean b = gamepad2.b;
 
-        // Use gamepad left & right Bumpers to open and close the claw
-        if (gamepad1.right_bumper)
-            clawOffset += CLAW_SPEED;
-        else if (gamepad1.left_bumper)
-            clawOffset -= CLAW_SPEED;
-
         // Move both servos to new position.  Assume servos are mirror image of each other.
         clawOffset = Range.clip(clawOffset, -0.5, 0.5);
+
         if(x)
             robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-        robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
-
+        else if(b)
+            robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
 
         // Send telemetry message to signify robot running;
