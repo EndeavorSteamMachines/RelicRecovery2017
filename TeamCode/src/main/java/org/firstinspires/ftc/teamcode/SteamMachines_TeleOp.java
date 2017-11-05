@@ -110,6 +110,9 @@ public class SteamMachines_TeleOp extends OpMode
 
         // servos
         glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
+        glyph_servo.setDirection(Servo.Direction.FORWARD);
+        glyph_servo.setPosition(1); // set in open position
+        // how do we set limits on servo???
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -159,9 +162,9 @@ public class SteamMachines_TeleOp extends OpMode
 
         // ** glyph servo **
         if (gamepad2.a)
-            glyph_servo.setPosition(1);
+            glyph_servo.setPosition(1); // open
         else if (gamepad2.b)
-            glyph_servo.setPosition(0);
+            glyph_servo.setPosition(0); // close
 
         // Telemetry: show elapsed time, wheel power, lifter motor
         // This can be whatever we want it to be.  We want info that helps the operators.
