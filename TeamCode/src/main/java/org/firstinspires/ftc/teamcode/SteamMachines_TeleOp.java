@@ -44,16 +44,16 @@ import com.qualcomm.robotcore.util.Range;
  *   Motors
  *    left_drive
  *    right_drive
- *    lifter_drive
+ *    lifter_motor
  *
  *   Servos
- *    gem_servoA
- *    gem_servoB
  *    glyph_servo
+ *    gem_servoA (autonomous mode only)
+ *    gem_servoB (autonomous mode only)
  *
  *   Sensors
- *    gem_sensor
- *    camera
+ *    gem_sensor (autonomous mode only)
+ *    camera (autonomous mode only)
  *
  *
  * How we control:
@@ -67,27 +67,26 @@ import com.qualcomm.robotcore.util.Range;
  *
  *   Gamepad2 definitions:
  *    left_stick_y (up and down) controls lifter up and down
- *    left_bumper (press) opens grabber
- *    right_bumper (press) closes grabber
+ *    A button (press) opens glyph_servo
+ *    B button (press) closes glyph_servo
  *
- *    ? button (press) gem_servoA up and down
- *    ? button (press) gem_servoB forward (knock off ball closest to front of robot)
- *    ? button (press) gem_servoB backward (knock off ball closest to back of robot)
  **/
 
 @TeleOp(name="SteamMachines TeleOp Mode", group="Iterative Opmode")
 //@Disabled
 public class SteamMachines_TeleOp extends OpMode
 {
-    // instantiate motors, servos and sensor objects
-    // motors
+
+    // instantiate objects
+    //  timer
     private ElapsedTime runtime = new ElapsedTime();
+    //  motors
     private DcMotor left_drive = null;
     private DcMotor right_drive = null;
     private DcMotor lifter_drive = null;
-    // servos
-    private Servo gem_servoA = null;
-    private Servo gem_servoB = null;
+    //  servos
+    private Servo glyph_servo = null;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -110,9 +109,8 @@ public class SteamMachines_TeleOp extends OpMode
         lifter_drive.setDirection(DcMotor.Direction.FORWARD);
 
         // servos
-        gem_servoA = hardwareMap.get(Servo.class,"gem_servoA");
-        gem_servoB = hardwareMap.get(Servo.class,"gem_servoB");
-        // sensors
+        glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
+
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
 
@@ -139,10 +137,7 @@ public class SteamMachines_TeleOp extends OpMode
     @Override
     public void loop() {
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
-
-        // drive motors
+        // ** drive motors **
         //    left_stick_y (up and down) controls forward or backward
         //    right_stick_x (side to side) controls turning
 
@@ -156,27 +151,20 @@ public class SteamMachines_TeleOp extends OpMode
         left_drive.setPower(leftPower);
         right_drive.setPower(rightPower);
 
-        // lifter motor
+        // ** lifter motor **
         //    left_stick_y (up and down) controls lifter up and down
         double lift = gamepad2.left_stick_y;
         double lifterPower = Range.clip(lift, -1.0, 1.0);
         lifter_drive.setPower(lifterPower);
 
-        // gem sensors
-        if (gamepad2.left_bumper)
-            gem_servoA.setPosition(1);
-        else if (gamepad2.x)
-            gem_servoA.setPosition(0);
-
-        if (gamepad2.right_bumper)
-            gem_servoB.setPosition(1);
-        else if (gamepad2.y)
-            gem_servoB.setPosition(0);
-
-
+        // ** glyph servo **
+        if (gamepad2.a)
+            glyph_servo.setPosition(1);
+        else if (gamepad2.b)
+            glyph_servo.setPosition(0);
 
         // Telemetry: show elapsed time, wheel power, lifter motor
-        // This can be whatever we want it to be.  We want info that helps the drivers.
+        // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         telemetry.addData("lifter motor (%.2f)", lifterPower);
