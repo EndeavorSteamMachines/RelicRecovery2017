@@ -37,6 +37,9 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
+ *
+ * Comment from John to Vadim on Sunday morning
+ *
  * This file provides basic Telop driving for a Pushbot robot.
  * The code is structured as an Iterative OpMode
  *
