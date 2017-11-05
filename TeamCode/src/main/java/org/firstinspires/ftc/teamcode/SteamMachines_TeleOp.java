@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -37,56 +36,86 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-// Sunday mornin' comment!
 /**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
+ * FTC ENDEAVOR STEAM MACHINE Robot Controller OpMode
  *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
+ * What we control:
  *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+ *   Motors
+ *    left_drive
+ *    right_drive
+ *    lifter_drive
+ *
+ *   Servos
+ *    gem_servoA
+ *    gem_servoB
+ *    glyph_servo
+ *
+ *   Sensors
+ *    gem_sensor
+ *    camera
+ *
+ *
+ * How we control:
+ *
+ *   Gamepad1 will control the left_drive and right_drive.
+ *   Gamepad2 will control everything else.
+ *
+ *   Gamepad1 definitions:
+ *    left_stick_y (up and down) controls forward or backward
+ *    right_stick_x (side to side) controls turning
+ *
+ *   Gamepad2 definitions:
+ *    left_stick_y (up and down) controls lifter up and down
+ *    left_bumper (press) opens grabber
+ *    right_bumper (press) closes grabber
+ *
+ *    ? button (press) gem_servoA up and down
+ *    ? button (press) gem_servoB forward (knock off ball closest to front of robot)
+ *    ? button (press) gem_servoB backward (knock off ball closest to back of robot)
+ **/
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
-@Disabled
-public class Test_TeleOp extends OpMode
+@TeleOp(name="SteamMachines TeleOp Mode", group="Iterative Opmode")
+//@Disabled
+public class SteamMachines_TeleOp extends OpMode
 {
-    // Declare OpMode members.
+    // instantiate motors, servos and sensor objects
+    // motors
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor lifterDrive = null; 
-    private Servo gem_servoA = null; 
+    private DcMotor left_drive = null;
+    private DcMotor right_drive = null;
+    private DcMotor lifter_drive = null;
+    // servos
+    private Servo gem_servoA = null;
     private Servo gem_servoB = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+        // let drivers know that initialization has begun
+        telemetry.addData("Status", "Initializing");
+
+        // Initialize hardware variables
+        // NOTE: deviceName must match config file on phone
+
+        // motors
+        left_drive = hardwareMap.get(DcMotor.class,"left_drive");
+        left_drive.setDirection(DcMotor.Direction.FORWARD);
+
+        right_drive = hardwareMap.get(DcMotor.class,"right_drive");
+        right_drive.setDirection(DcMotor.Direction.REVERSE);
+
+        lifter_drive = hardwareMap.get(DcMotor.class,"lifter_motor");
+        lifter_drive.setDirection(DcMotor.Direction.FORWARD);
+
+        // servos
+        gem_servoA = hardwareMap.get(Servo.class,"gem_servoA");
+        gem_servoB = hardwareMap.get(Servo.class,"gem_servoB");
+        // sensors
+        // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        lifterDrive = hardwareMap.get(DcMotor.class, "lifter_drive"); 
-        gem_servoA = hardwareMap.get(Servo.class, "gem_servoA"); 
-        gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        lifterDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
     }
 
     /*
@@ -109,34 +138,31 @@ public class Test_TeleOp extends OpMode
      */
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
-        double lifterPower; 
-        double servoPower; 
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
+        // drive motors
+        //    left_stick_y (up and down) controls forward or backward
+        //    right_stick_x (side to side) controls turning
+
+        // turn and drive depend on the current position of the joysticks
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
+        // use turn and drive to determine amount of power to apply to motors
+        double leftPower = Range.clip(drive + turn, -1.0, 1.0);
+        double rightPower = Range.clip(drive - turn, -1.0, 1.0);
+        // set motor power
+        left_drive.setPower(leftPower);
+        right_drive.setPower(rightPower);
+
+        // lifter motor
+        //    left_stick_y (up and down) controls lifter up and down
         double lift = gamepad2.left_stick_y;
-        leftPower = Range.clip(drive + turn, -1.0, 1.0);
-        rightPower = Range.clip(drive - turn, -1.0, 1.0);
-        lifterPower = Range.clip(lift, -1.0, 1.0);
+        double lifterPower = Range.clip(lift, -1.0, 1.0);
+        lifter_drive.setPower(lifterPower);
 
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
-
-        // Send calculated power to wheels
-        leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
-        lifterDrive.setPower(lifterPower);
-
+        // gem sensors
         if (gamepad2.left_bumper)
             gem_servoA.setPosition(1);
         else if (gamepad2.x)
@@ -146,10 +172,11 @@ public class Test_TeleOp extends OpMode
             gem_servoB.setPosition(1);
         else if (gamepad2.y)
             gem_servoB.setPosition(0);
-//
-//
 
-        // Show the elapsed game time and wheel power.
+
+
+        // Telemetry: show elapsed time, wheel power, lifter motor
+        // This can be whatever we want it to be.  We want info that helps the drivers.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         telemetry.addData("lifter motor (%.2f)", lifterPower);
