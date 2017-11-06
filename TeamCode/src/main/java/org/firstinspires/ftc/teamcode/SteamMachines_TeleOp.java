@@ -87,8 +87,8 @@ public class SteamMachines_TeleOp extends OpMode
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.0;    // 0 degrees
-    static double GLYPH_SERVO_CLOSED = 0.4;  // 0.4 * 180 = 72 degrees
+    static double GLYPH_SERVO_OPEN = 0.45;    // 0 degrees
+    static double GLYPH_SERVO_CLOSED = 0.9;  // 0.4 * 180 = 72 degrees
 
     /*
      * Code to run ONCE when the driver hits INIT
