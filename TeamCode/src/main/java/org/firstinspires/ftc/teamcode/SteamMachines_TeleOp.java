@@ -37,13 +37,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * FTC ENDEAVOR STEAM MACHINE Robot Controller OpMode
+ * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
  *
  * What we control:
  *
  *   Motors
- *    left_drive
- *    right_drive
+ *    left_motor
+ *    right_motor
  *    lifter_motor
  *
  *   Servos
@@ -58,7 +58,7 @@ import com.qualcomm.robotcore.util.Range;
  *
  * How we control:
  *
- *   Gamepad1 will control the left_drive and right_drive.
+ *   Gamepad1 will control the left_motor and right_motor.
  *   Gamepad2 will control everything else.
  *
  *   Gamepad1 definitions:
@@ -77,15 +77,18 @@ import com.qualcomm.robotcore.util.Range;
 public class SteamMachines_TeleOp extends OpMode
 {
 
-    // instantiate objects
-    //  timer
-    private ElapsedTime runtime = new ElapsedTime();
+    // Constructor: instantiate objects used in this class
     //  motors
-    private DcMotor left_drive = null;
-    private DcMotor right_drive = null;
-    private DcMotor lifter_drive = null;
+    private DcMotor left_motor = null;
+    private DcMotor right_motor = null;
+    private DcMotor lifter_motor = null;
     //  servos
     private Servo glyph_servo = null;
+    //  timer
+    private ElapsedTime runtime = new ElapsedTime();
+    //  constants
+    static double GLYPH_SERVO_OPEN = 0.0;    // 0 degrees
+    static double GLYPH_SERVO_CLOSED = 0.4;  // 0.4 * 180 = 72 degrees
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -97,21 +100,20 @@ public class SteamMachines_TeleOp extends OpMode
 
         // Initialize hardware variables
         // NOTE: deviceName must match config file on phone
-
         // motors
-        left_drive = hardwareMap.get(DcMotor.class,"left_drive");
-        left_drive.setDirection(DcMotor.Direction.FORWARD);
+        left_motor = hardwareMap.get(DcMotor.class,"left_motor");
+        left_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        right_drive = hardwareMap.get(DcMotor.class,"right_drive");
-        right_drive.setDirection(DcMotor.Direction.REVERSE);
+        right_motor = hardwareMap.get(DcMotor.class,"right_motor");
+        right_motor.setDirection(DcMotor.Direction.REVERSE);
 
-        lifter_drive = hardwareMap.get(DcMotor.class,"lifter_motor");
-        lifter_drive.setDirection(DcMotor.Direction.FORWARD);
+        lifter_motor = hardwareMap.get(DcMotor.class,"lifter_motor");
+        lifter_motor.setDirection(DcMotor.Direction.FORWARD);
 
         // servos
         glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
-        glyph_servo.setPosition(1); // set in open position
+        glyph_servo.setPosition(GLYPH_SERVO_OPEN);
         // how do we set limits on servo???
 
         // let drivers know that initialization has finished
@@ -151,26 +153,28 @@ public class SteamMachines_TeleOp extends OpMode
         double leftPower = Range.clip(drive + turn, -1.0, 1.0);
         double rightPower = Range.clip(drive - turn, -1.0, 1.0);
         // set motor power
-        left_drive.setPower(leftPower);
-        right_drive.setPower(rightPower);
+        left_motor.setPower(leftPower);
+        right_motor.setPower(rightPower);
 
         // ** lifter motor **
         //    left_stick_y (up and down) controls lifter up and down
         double lift = gamepad2.left_stick_y;
         double lifterPower = Range.clip(lift, -1.0, 1.0);
-        lifter_drive.setPower(lifterPower);
+        lifter_motor.setPower(lifterPower);
 
         // ** glyph servo **
+        //    buttons A and B will open or close the grabber
         if (gamepad2.a)
-            glyph_servo.setPosition(1); // open
+            glyph_servo.setPosition(GLYPH_SERVO_OPEN);
         else if (gamepad2.b)
-            glyph_servo.setPosition(0); // close
+            glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
 
         // Telemetry: show elapsed time, wheel power, lifter motor
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("lifter motor (%.2f)", lifterPower);
+        telemetry.addData("Lifter motor (%.2f)", lifterPower);
+        telemetry.addData("Glyph Servo position (%.2f)", glyph_servo.getPosition());
     }
 
     /*
