@@ -67,7 +67,7 @@ import com.qualcomm.robotcore.util.Range;
  *
  *   Gamepad2 definitions:
  *    left_stick_y (up and down) controls lifter up and down
- *    A button (press) opens glyph_servo
+ *    X button (press) opens glyph_servo
  *    B button (press) closes glyph_servo
  *
  **/
@@ -163,8 +163,8 @@ public class SteamMachines_TeleOp extends OpMode
         lifter_motor.setPower(lifterPower);
 
         // ** glyph servo **
-        //    buttons A and B will open or close the grabber
-        if (gamepad2.a)
+        //    buttons X and B will open or close the grabber
+        if (gamepad2.x)
             glyph_servo.setPosition(GLYPH_SERVO_OPEN);
         else if (gamepad2.b)
             glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
