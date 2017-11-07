@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.hardware.Sensor;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -84,13 +86,21 @@ public class VerificationOpmode extends OpMode
     private DcMotor left_motor = null;
     private DcMotor right_motor = null;
     private DcMotor lifter_motor = null;
+    //sensors
+    private Sensor  IMU = null;
     //  servos
     private Servo glyph_servo = null;
+    private Servo gem_servoA = null;
+    private Servo gem_servoB = null;
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
     static double GLYPH_SERVO_OPEN = 0.45;    // 0 degrees
     static double GLYPH_SERVO_CLOSED = 0.9;  // 0.4 * 180 = 72 degrees
+    static double GEM_SERVO_A_DOWN = 0.8;
+    static double GEM_SERVO_A_UP = 0.1;
+    static double GEM_SERVO_B_FOLDED = 0.0;
+    static double GEM_SERVO_B_OPEN = 1.0;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -116,7 +126,17 @@ public class VerificationOpmode extends OpMode
         glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
+
+        gem_servoA = hardwareMap.get(Servo.class, "gem_servoA");
+        gem_servoA.setDirection(Servo.Direction.FORWARD);
+        gem_servoA.setPosition(GEM_SERVO_A_UP);
+
+        gem_servoB =  hardwareMap.get(Servo.class, "gem_servoB");
+        gem_servoB.setDirection(Servo.Direction.REVERSE);
+        gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
         // how do we set limits on servo???
+//        find sensors on hw map
+        IMU = hardwareMap.get(Sensor.class,"IMU");
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -165,18 +185,29 @@ public class VerificationOpmode extends OpMode
         lifter_motor.setPower(lifterPower);
 
         // ** glyph servo **
-        //    buttons X and B will open or close the grabber
+        //    buttons X and B will open or close the grabber on gamepad2
         if (gamepad2.x)
             glyph_servo.setPosition(GLYPH_SERVO_OPEN);
         else if (gamepad2.b)
             glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
 
+//        buttons A and Y will move gem_servoA up and down on gamepad2
+        if (gamepad1.a)
+            gem_servoA.setPosition(GEM_SERVO_A_DOWN);
+        else if (gamepad1.y)
+            gem_servoA.setPosition(GEM_SERVO_A_UP);
+//        buttons lb and rb will fold and unfold gem_servoB on gamepad2
+        if (gamepad1.left_bumper)
+            gem_servoB.setPosition(GEM_SERVO_B_OPEN);
+        else if (gamepad1.right_bumper)
+            gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
+
         // Telemetry: show elapsed time, wheel power, lifter motor
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", "Lifter motor (%.2f)", leftPower, rightPower, lifterPower);
-        telemetry.addData("Glyph Servo position (%.2f)", glyph_servo.getPosition());
-//        telemetry.addData("IMU", );
+        telemetry.addData("Glyph Servo pos. (%.2f)", "Gem Servo A pos. (%.2f)", "Gem Servo B pos.", glyph_servo.getPosition());
+        telemetry.addData("IMU", IMU);
     }
 
     /*
