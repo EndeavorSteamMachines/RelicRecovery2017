@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
+//import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
 
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
@@ -96,9 +96,11 @@ public class VerificationOpmode extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
     static double GLYPH_SERVO_OPEN = 0.45;    // 0 degrees
-    static double GLYPH_SERVO_CLOSED = 0.9;  // 0.4 * 180 = 72 degrees
+    static double GLYPH_SERVO_CLOSED = 0.9;// 0.4 * 180 = 72 degrees
+
     static double GEM_SERVO_A_DOWN = 0.8;
     static double GEM_SERVO_A_UP = 0.1;
+
     static double GEM_SERVO_B_FOLDED = 0.0;
     static double GEM_SERVO_B_OPEN = 1.0;
 
@@ -135,6 +137,7 @@ public class VerificationOpmode extends OpMode
         gem_servoB.setDirection(Servo.Direction.REVERSE);
         gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
         // how do we set limits on servo???
+
 //        find sensors on hw map
         IMU = hardwareMap.get(Sensor.class,"IMU");
 
@@ -196,18 +199,20 @@ public class VerificationOpmode extends OpMode
             gem_servoA.setPosition(GEM_SERVO_A_DOWN);
         else if (gamepad1.y)
             gem_servoA.setPosition(GEM_SERVO_A_UP);
+
 //        buttons lb and rb will fold and unfold gem_servoB on gamepad2
         if (gamepad1.left_bumper)
             gem_servoB.setPosition(GEM_SERVO_B_OPEN);
         else if (gamepad1.right_bumper)
             gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
 
-        // Telemetry: show elapsed time, wheel power, lifter motor
+        // Telemetry: show elapsed time, wheel power, lifter motor, servos, and possibly sensors
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", "Lifter motor (%.2f)", leftPower, rightPower, lifterPower);
-        telemetry.addData("Glyph Servo pos. (%.2f)", "Gem Servo A pos. (%.2f)", "Gem Servo B pos.", glyph_servo.getPosition());
-        telemetry.addData("IMU", IMU);
+        telemetry.addData( "Gem Servo A pos. (%.2f)", "Gem Servo B pos.", gem_servoA.getPosition(), gem_servoB.getPosition());
+        telemetry.addData("Glyph Servo pos. (%.2f)", glyph_servo.getPosition());
+//        telemetry.addData("IMU", IMU);
     }
 
     /*
