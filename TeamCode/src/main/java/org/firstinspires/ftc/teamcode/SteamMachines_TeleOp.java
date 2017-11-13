@@ -78,7 +78,7 @@ import com.qualcomm.robotcore.util.Range;
 public class SteamMachines_TeleOp extends OpMode
 {
 
-    // Constructor: instantiate objects used in this class
+    // Constructor: instantiate objects used in this class.
     //  motors
     private DcMotor left_motor = null;
     private DcMotor right_motor = null;
