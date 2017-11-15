@@ -73,7 +73,7 @@ import com.qualcomm.robotcore.util.Range;
  *
  **/
 
-@TeleOp(name="SteamMachines TeleOp Mode", group="Iterative Opmode")
+@TeleOp(name="SteamMachines TeleOp Mode", group="TeleOp")
 //@Disabled
 public class SteamMachines_TeleOp extends OpMode
 {
@@ -115,7 +115,7 @@ public class SteamMachines_TeleOp extends OpMode
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
-        lifter_motor.setTargetPosition(LIFTER_MIN_POS);
+        //lifter_motor.setTargetPosition(LIFTER_MIN_POS);
 
         // servos
         glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
@@ -175,14 +175,14 @@ public class SteamMachines_TeleOp extends OpMode
             if(lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
-                lifter_motor.setPower(0);
+                lifter_motor.setPower(LIFTER_IDLE);
         else if(lifterPower < -0.1)//joysticks = negative is down
             if(lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else
-                lifter_motor.setPower(0);
+                lifter_motor.setPower(LIFTER_IDLE);
         else
-            lifter_motor.setPower(0);
+            lifter_motor.setPower(LIFTER_IDLE);
 
         // ** glyph servo **
         //    buttons X and B will open or close the grabber
@@ -194,9 +194,9 @@ public class SteamMachines_TeleOp extends OpMode
         // Telemetry: show elapsed time, wheel power, lifter motor
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Lifter motor (%.2f)", lifterPower);
-        telemetry.addData("lifter_motor.getCurrentPosition", lifter_motor.getCurrentPosition());
+        telemetry.addData("Left Right Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lifter Motor", "left (%.2f)", lifterPower);
+        telemetry.addData("lifter Motor Position", lifter_motor.getCurrentPosition());
         telemetry.addData("Glyph Servo position (%.2f)", glyph_servo.getPosition());
     }
 
