@@ -73,7 +73,7 @@ import com.qualcomm.robotcore.util.Range;
  *
  **/
 
-@TeleOp(name="SteamMachines TeleOp Mode", group="TeleOp")
+@TeleOp(name="SteamMachines TeleOp Mode", group="Steam")
 //@Disabled
 public class SteamMachines_TeleOp extends OpMode
 {
