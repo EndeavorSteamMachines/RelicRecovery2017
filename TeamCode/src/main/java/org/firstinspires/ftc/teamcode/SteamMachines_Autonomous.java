@@ -121,7 +121,6 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-        // how do we set limits on servo???
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
