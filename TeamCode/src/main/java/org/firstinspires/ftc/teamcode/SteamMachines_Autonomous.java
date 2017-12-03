@@ -29,10 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -73,15 +70,16 @@ import com.qualcomm.robotcore.util.Range;
  *    X button (press) opens glyph_servo
  *    B button (press) closes glyph_servo
  *
+ *
  *  Tracking inputs:
  *    IMU heading (from the REV Expansion Hub)
- *    left_motor, right_motor position
+ *    left_motor, right_motor position (from encoders)
  *
  *
  **/
-@Autonomous(name="SteamMachines Autonomous Mode", group="Iterative Opmode")
+@Autonomous(name="SteamMachines Autonomous Mode", group="Linear Opmode")
 //@Disabled
-public class SteamMachines_AutoMode extends LinearOpMode {
+public class SteamMachines_Autonomous extends LinearOpMode {
 
     // Constructor: instantiate objects used in this class.
     //  motors
@@ -93,8 +91,8 @@ public class SteamMachines_AutoMode extends LinearOpMode {
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.40;    // 0 degrees
-    static double GLYPH_SERVO_CLOSED = 0.9;  // 0.4 * 180 = 72 degrees
+    static double GLYPH_SERVO_OPEN = 0.4;    // 0.4 * 180 =  72 degrees
+    static double GLYPH_SERVO_CLOSED = 0.9;  // 0.9 * 180 = 162 degrees
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
@@ -106,8 +104,7 @@ public class SteamMachines_AutoMode extends LinearOpMode {
         telemetry.addData("Status", "Initializing");
 
         // Initialize hardware variables
-        // NOTE: deviceName must match config file on phone
-        // motors
+        // NOTE: deviceName must match config file on phone motors
         left_motor = hardwareMap.get(DcMotor.class,"left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -124,7 +121,6 @@ public class SteamMachines_AutoMode extends LinearOpMode {
         glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-        // how do we set limits on servo???
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -136,22 +132,30 @@ public class SteamMachines_AutoMode extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-        // decode crypto-key
+            // timer may be used to limit amount of time for each task
+            // double timer = runtime.time();
 
+            // decode crypto-key: call vuforia and save input
+            String cyptoKey = FindCryptoKey();
 
-        // gem bump
-
-
-        // find crypt
-
-
-
-        // place gem
-
-
-        // park
-
-
+//            // gem bump: move servos, get input
+//            GemBump();
+//
+//
+//            //move: get left, center, or right to determine column
+//            if(cryptokey = "false")
+//                cyptoKey = findCryptoKey();
+//
+//            MoveToColumn();
+//
+//
+//            // place glyph: turn, open grabber
+//            TurnToFaceCryptobox();
+//            PlaceBlock(cryptokey);
+//
+//
+//            // park: get readings from colors sensor and make adjustments, end opmode
+//            Park();
 
 
 //        // Telemetry: show elapsed time, wheel power, lifter motor
@@ -164,135 +168,14 @@ public class SteamMachines_AutoMode extends LinearOpMode {
 
         }
     }
+
+    // methods used in Autonomous mode
+    public String FindCryptoKey(){
+      String cryptoKey = "Center"; // default value
+
+        // use vuForia code here
+
+
+      return cryptoKey;
+    }
 }
-
-
-
-//@TeleOp(name="SteamMachines TeleOp Mode", group="Iterative Opmode")
-////@Disabled
-//public class SteamMachines_AutoMode extends OpMode
-//{
-//
-//    // Constructor: instantiate objects used in this class.
-//    //  motors
-//    private DcMotor left_motor = null;
-//    private DcMotor right_motor = null;
-//    private DcMotor lifter_motor = null;
-//    //  servos
-//    private Servo glyph_servo = null;
-//    //  timer
-//    private ElapsedTime runtime = new ElapsedTime();
-//    //  constants
-//    static double GLYPH_SERVO_OPEN = 0.40;    // 0 degrees
-//    static double GLYPH_SERVO_CLOSED = 0.9;  // 0.4 * 180 = 72 degrees
-//    static int LIFTER_MIN_POS = 100;
-//    static int LIFTER_MAX_POS = 6000;
-//    static double LIFTER_IDLE = 0.01;
-//
-//    /*
-//     * Code to run ONCE when the driver hits INIT
-//     */
-//    @Override
-//    public void init() {
-//        // let drivers know that initialization has begun
-//        telemetry.addData("Status", "Initializing");
-//
-//        // Initialize hardware variables
-//        // NOTE: deviceName must match config file on phone
-//        // motors
-//        left_motor = hardwareMap.get(DcMotor.class,"left_motor");
-//        left_motor.setDirection(DcMotor.Direction.FORWARD);
-//
-//        right_motor = hardwareMap.get(DcMotor.class,"right_motor");
-//        right_motor.setDirection(DcMotor.Direction.REVERSE);
-//
-//        lifter_motor = hardwareMap.get(DcMotor.class,"lifter_motor");
-//        lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        lifter_motor.setDirection(DcMotor.Direction.REVERSE);
-//        lifter_motor.setTargetPosition(LIFTER_MIN_POS);
-//
-//        // servos
-//        glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
-//        glyph_servo.setDirection(Servo.Direction.FORWARD);
-//        glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-//        // how do we set limits on servo???
-//
-//        // let drivers know that initialization has finished
-//        telemetry.addData("Status", "Initialized");
-//
-//    }
-//
-//    /*
-//     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-//     */
-//    @Override
-//    public void init_loop() {
-//    }
-//
-//    /*
-//     * Code to run ONCE when the driver hits PLAY
-//     */
-//    @Override
-//    public void start() {
-//        runtime.reset();
-//    }
-//
-//    /*
-//     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-//     */
-//    @Override
-//    public void loop() {
-//
-//        // ** drive motors **
-//        //    left_stick_y (up and down) controls forward or backward
-//        //    right_stick_x (side to side) controls turning
-//
-//        // turn and drive depend on the current position of the joysticks
-//        double drive = -gamepad1.left_stick_y;
-//        double turn = gamepad1.right_stick_x;
-//
-//        // use turn and drive to determine amount of power to apply to motors
-//        double leftPower = Range.clip(drive + turn, -1.0, 1.0);
-//        double rightPower = Range.clip(drive - turn, -1.0, 1.0);
-//        // set motor power
-//        left_motor.setPower(leftPower);
-//        right_motor.setPower(rightPower);
-//
-//        // ** lifter motor **
-//        //    left_stick_y (up and down) controls lifter up and down
-//        double lift = -gamepad2.left_stick_y; // make positive up
-//        double lifterPower = Range.clip(lift, -1.0, 1.0);
-//        int lifter_pos = lifter_motor.getCurrentPosition();
-//
-//        //set paramaters for lifter_motor
-//        if(lifterPower > 0.1)//joysticks = positive is up
-//            if(lifter_pos < LIFTER_MAX_POS)
-//                lifter_motor.setPower(lifterPower);
-//            else
-//                lifter_motor.setPower(0);
-//        else if(lifterPower < -0.1)//joysticks = negative is down
-//            if(lifter_pos > LIFTER_MIN_POS)
-//                lifter_motor.setPower(lifterPower);
-//            else
-//                lifter_motor.setPower(0);
-//        else
-//            lifter_motor.setPower(0);
-//
-//        // ** glyph servo **
-//        //    buttons X and B will open or close the grabber
-//        if (gamepad2.b)
-//            glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
-//        else if (gamepad2.x)
-//            glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-//
-//    }
-//
-//    /*
-//     * Code to run ONCE after the driver hits STOP
-//     */
-//    @Override
-//    public void stop() {
-//    }
-//
-//}
