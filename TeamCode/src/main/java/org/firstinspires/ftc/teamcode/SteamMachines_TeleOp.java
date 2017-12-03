@@ -171,18 +171,18 @@ public class SteamMachines_TeleOp extends OpMode
         int lifter_pos = lifter_motor.getCurrentPosition();
 
         //set paramaters for lifter_motor
-        if(lifterPower > 0.1)//joysticks = positive is up
+        if(lifterPower > 0.2)//joysticks = positive is up
             if(lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
-                lifter_motor.setPower(0);
-        else if(lifterPower < -0.1)//joysticks = negative is down
+                lifter_motor.setPower(LIFTER_IDLE);
+        else if(lifterPower < -0.2)//joysticks = negative is down
             if(lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else
                 lifter_motor.setPower(0);
         else
-            lifter_motor.setPower(0);
+            lifter_motor.setPower(LIFTER_IDLE);
 
         // ** glyph servo **
         //    buttons X and B will open or close the grabber
