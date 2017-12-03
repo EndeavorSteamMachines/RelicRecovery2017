@@ -93,6 +93,7 @@ public class SteamMachines_TeleOp extends OpMode
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
+    static double JOYSTICK_DEADZONE = 0.2;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -171,12 +172,12 @@ public class SteamMachines_TeleOp extends OpMode
         int lifter_pos = lifter_motor.getCurrentPosition();
 
         //set paramaters for lifter_motor
-        if(lifterPower > 0.2)//joysticks = positive is up
+        if(lifterPower > JOYSTICK_DEADZONE)//joystick = positive is up
             if(lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
                 lifter_motor.setPower(LIFTER_IDLE);
-        else if(lifterPower < -0.2)//joysticks = negative is down
+        else if(lifterPower < -JOYSTICK_DEADZONE)//joystick = negative is down
             if(lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else
