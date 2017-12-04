@@ -146,7 +146,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //            if(cryptokey = "false")
 //                cyptoKey = findCryptoKey();
 //
-            MoveToColumn();
+//            MoveToColumn();
 //
 //
 //            // place glyph: turn, open grabber
@@ -177,21 +177,5 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
 
       return cryptoKey;
-    }
-    public void MoveToColumn(){
-        int power = 1;
-        double WHEEL_CIRC = 11;//inches
-        double GEAR_RATIO = 40/56;
-        double DIST_ONE_ROT = WHEEL_CIRC * GEAR_RATIO;
-        int rotationCount = 0;
-        int DISTANCE = 36;//inches
-        double MAX_ROT = DISTANCE / DIST_ONE_ROT;
-        left_motor.setTargetPosition(36);
-        while (!left_motor.isBusy()){
-
-        }
-        left_motor.setPower(power);
-        right_motor.setPower(power);
-
     }
 }
