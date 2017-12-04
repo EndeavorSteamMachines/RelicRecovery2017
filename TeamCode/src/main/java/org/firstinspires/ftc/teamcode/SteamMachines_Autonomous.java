@@ -36,6 +36,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.*;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller Autonomous Mode
  *
@@ -88,6 +91,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     private DcMotor lifter_motor = null;
     //  servos
     private Servo glyph_servo = null;
+    private Servo gem_servo = null;
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
@@ -136,17 +140,17 @@ public class SteamMachines_Autonomous extends LinearOpMode {
             // double timer = runtime.time();
 
             // decode crypto-key: call vuforia and save input
-            String cyptoKey = FindCryptoKey();
+            RelicRecoveryVuMark cyptoKey = FindCryptoKey();
 
-//            // gem bump: move servos, get input
-//            GemBump();
+           //gem bump: move servos, get input
+           GemBump("red");
 //
 //
 //            //move: get left, center, or right to determine column
 //            if(cryptokey = "false")
 //                cyptoKey = findCryptoKey();
 //
-//            MoveToColumn();
+  //          MoveToColumn();
 //
 //
 //            // place glyph: turn, open grabber
@@ -165,17 +169,28 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //        telemetry.addData("Lifter motor (%.2f)", lifterPower);
 //        telemetry.addData("lifter_motor.getCurrentPosition", lifter_motor.getCurrentPosition());
 //        telemetry.addData("Glyph Servo position (%.2f)", glyph_servo.getPosition());
+       telemetry.addData("VuMark", "not visible");
 
         }
     }
 
     // methods used in Autonomous mode
-    public String FindCryptoKey(){
-      String cryptoKey = "Center"; // default value
+    public RelicRecoveryVuMark FindCryptoKey() {
+        //RelicRecoveryVuMark cryptoKey = "Center"; // default value
+        RelicRecoveryVuMark cryptoKey ;
 
-        // use vuForia code here
+        // use vuforia code here
+        ConceptVuMarkIdentification camera = new ConceptVuMarkIdentification();
+        camera.runOpMode();
+        camera.init();
+        camera.start();
+        cryptoKey = camera.vuMark;
 
-
-      return cryptoKey;
+        return cryptoKey;
     }
+    public void GemBump(String robotColor) {
+
+        // methods used in Autonomous mode
+         }
 }
+    // methods used in Autonomous mode
