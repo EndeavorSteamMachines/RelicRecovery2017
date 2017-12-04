@@ -190,7 +190,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     }
     public void GemBump(String robotColor) {
 
-        // methods used in Autonomous mode
+
          }
 }
     // methods used in Autonomous mode
