@@ -144,10 +144,11 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         // task 1: decode crypto-key
         telemetry.addData("Status", "Task 1 started");
         RelicRecoveryVuMark cyptoKey = FindCryptoKey();
-        telemetry.addData("Status", "Task 1 started");
+        telemetry.addData("Status", "Task 1 finished");
         // need if statement here!
 
         telemetry.addData("VuMark", "not visible");
+
 
         // task 2: knock off other-colored gem
 //        GemBump(startPos);
