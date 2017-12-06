@@ -43,19 +43,15 @@ import com.qualcomm.robotcore.util.Range;
  * What we control:
  *
  *   Motors
- *    left_motor
- *    right_motor
- *    lifter_motor
+ *     left_motor
+ *     right_motor
+ *     lifter_motor
  *
  *   Servos
- *    glyph_servo
- *    gem_servoA (autonomous mode only)
- *    gem_servoB (autonomous mode only)
+ *     glyph_servo
  *
  *   Sensors
- *    gem_sensor (autonomous mode only)
- *    camera (autonomous mode only)
- *
+ *     ?
  *
  * How we control:
  *
@@ -88,8 +84,8 @@ public class SteamMachines_TeleOp extends OpMode
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.40;    // 0 degrees
-    static double GLYPH_SERVO_CLOSED = 0.9;  // 0.4 * 180 = 72 degrees
+    static double GLYPH_SERVO_OPEN = 0.40;    // 0.4 * 180 = 72 degrees
+    static double GLYPH_SERVO_CLOSED = 0.90;  // 0.9 * 180 = 162 degrees
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
@@ -172,12 +168,12 @@ public class SteamMachines_TeleOp extends OpMode
         int lifter_pos = lifter_motor.getCurrentPosition();
 
         //set paramaters for lifter_motor
-        if(lifterPower > JOYSTICK_DEADZONE)//joystick = positive is up
+        if(lifterPower > JOYSTICK_DEADZONE)//joystick up/positive
             if(lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
                 lifter_motor.setPower(LIFTER_IDLE);
-        else if(lifterPower < -JOYSTICK_DEADZONE)//joystick = negative is down
+        else if(lifterPower < -JOYSTICK_DEADZONE)//joystick down/negative
             if(lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else
@@ -206,6 +202,7 @@ public class SteamMachines_TeleOp extends OpMode
      */
     @Override
     public void stop() {
+        telemetry.addData("Status", "STOP has been pressed");
     }
 
 }

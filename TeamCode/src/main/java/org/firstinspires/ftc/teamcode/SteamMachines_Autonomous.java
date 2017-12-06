@@ -34,9 +34,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.*;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
@@ -44,20 +41,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  *
  * What we control:
  *
- *   Motors
- *    left_motor
- *    right_motor
- *    lifter_motor
+ * Motors
+ *   left_motor
+ *   right_motor
+ *   lifter_motor
+ *   gem_motor
  *
- *   Servos
- *    glyph_servo
- *    gem_servoA (autonomous mode only)
- *    gem_servoB (autonomous mode only)
+ * Servos
+ *   glyph_servo
+ *   gem_servo
  *
- *   Sensors
- *    gem_sensor (autonomous mode only)
- *    camera (autonomous mode only)
- *
+ * Sensors
+ *   gem_sensor
+ *   camera
  *
  * How we control:
  *
@@ -65,22 +61,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  *   Gamepad2 will control everything else.
  *
  *   Gamepad1 definitions:
- *    left_stick_y (up and down) controls forward or backward
- *    right_stick_x (side to side) controls turning
+ *     left_stick_y (up and down) controls forward or backward
+ *     right_stick_x (side to side) controls turning
  *
  *   Gamepad2 definitions:
- *    left_stick_y (up and down) controls lifter up and down
- *    X button (press) opens glyph_servo
- *    B button (press) closes glyph_servo
+ *     left_stick_y (up and down) controls lifter up and down
+ *     X button (press) opens glyph_servo
+ *     B button (press) closes glyph_servo
  *
- *
- *  Tracking inputs:
- *    IMU heading (from the REV Expansion Hub)
- *    left_motor, right_motor position (from encoders)
- *
+ *   Tracking inputs:
+ *     IMU heading (from the REV Expansion Hub)
+ *     left_motor, right_motor position (from encoders)
  *
  **/
-@Autonomous(name="SteamMachines Autonomous Mode", group="Linear Opmode")
+@Autonomous(name = "SteamMachines Autonomous Mode", group = "Linear Opmode")
 //@Disabled
 public class SteamMachines_Autonomous extends LinearOpMode {
 
@@ -89,6 +83,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     private DcMotor left_motor = null;
     private DcMotor right_motor = null;
     private DcMotor lifter_motor = null;
+    private DcMotor gem_motor = null;
     //  servos
     private Servo glyph_servo = null;
     private Servo gem_servo = null;
@@ -101,28 +96,37 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
 
+    // the starting position will be one of these
+    // R1 and B1 closest to Relic Recovery Zone
+    enum StartingPosition {
+       R1, R2, B1, B2
+    };
+
     @Override
     public void runOpMode() {
+
+        StartingPosition startPos = StartingPosition.B1;
 
         // let drivers know that initialization has begun
         telemetry.addData("Status", "Initializing");
 
         // Initialize hardware variables
-        // NOTE: deviceName must match config file on phone motors
-        left_motor = hardwareMap.get(DcMotor.class,"left_motor");
+        // NOTE: deviceName must match config file on phone!
+        // motors
+        left_motor = hardwareMap.get(DcMotor.class, "left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        right_motor = hardwareMap.get(DcMotor.class,"right_motor");
+        right_motor = hardwareMap.get(DcMotor.class, "right_motor");
         right_motor.setDirection(DcMotor.Direction.REVERSE);
 
-        lifter_motor = hardwareMap.get(DcMotor.class,"lifter_motor");
+        lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
         lifter_motor.setTargetPosition(LIFTER_MIN_POS);
 
         // servos
-        glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
+        glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
 
@@ -132,65 +136,66 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        telemetry.addData("Status", "Started!");
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        // timer may be used to limit amount of time for each task
+        // double timer = runtime.time();
 
-            // timer may be used to limit amount of time for each task
-            // double timer = runtime.time();
+        // task 1: decode crypto-key
+        telemetry.addData("Status", "Task 1 started");
+        RelicRecoveryVuMark cyptoKey = FindCryptoKey();
+        telemetry.addData("Status", "Task 1 started");
+        // need if statement here!
 
-            // decode crypto-key: call vuforia and save input
-            RelicRecoveryVuMark cyptoKey = FindCryptoKey();
+        telemetry.addData("VuMark", "not visible");
 
-           //gem bump: move servos, get input
-           GemBump("red");
+        // task 2: knock off other-colored gem
+//        GemBump(startPos);
+//
+        // task 3: move robot to crypt
+//      MoveToCrypt();
 //
 //
-//            //move: get left, center, or right to determine column
-//            if(cryptokey = "false")
-//                cyptoKey = findCryptoKey();
-//
-  //          MoveToColumn();
-//
-//
-//            // place glyph: turn, open grabber
+//            // task 4: place glyph
 //            TurnToFaceCryptobox();
 //            PlaceBlock(cryptokey);
 //
 //
-//            // park: get readings from colors sensor and make adjustments, end opmode
+//            // task 5: park
 //            Park();
-
-
-//        // Telemetry: show elapsed time, wheel power, lifter motor
-//        // This can be whatever we want it to be.  We want info that helps the operators.
+//
+//        // Telemetry: one time snap shots, not like TeloOp mode!
 //        telemetry.addData("Status", "Run Time: " + runtime.toString());
 //        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-//        telemetry.addData("Lifter motor (%.2f)", lifterPower);
-//        telemetry.addData("lifter_motor.getCurrentPosition", lifter_motor.getCurrentPosition());
-//        telemetry.addData("Glyph Servo position (%.2f)", glyph_servo.getPosition());
-       telemetry.addData("VuMark", "not visible");
 
-        }
+        // run until the end of the match (driver presses STOP)
+//        while (opModeIsActive() || timer is over 30 seconds ) {
+//            telemetry.addData("Status", "Waiting for driver to press STOP");
+//        }
     }
 
-    // methods used in Autonomous mode
+    // task 1: decode cryptoKey
     public RelicRecoveryVuMark FindCryptoKey() {
-        //RelicRecoveryVuMark cryptoKey = "Center"; // default value
-        RelicRecoveryVuMark cryptoKey ;
+        RelicRecoveryVuMark cryptoKey = RelicRecoveryVuMark.UNKNOWN; // default value
 
-        // use vuforia code here
+        // use vuforia code
         ConceptVuMarkIdentification camera = new ConceptVuMarkIdentification();
         camera.runOpMode();
         camera.init();
-        camera.start();
+        camera.start(); // need to wait???
         cryptoKey = camera.vuMark;
-
         return cryptoKey;
     }
-    public void GemBump(String robotColor) {
+
+    // task 2: knock off gem (that's not our color)
+//    public void GemBump(StartingPosition startPos  ??? what else here Emma ???) {
+//
+//
+//    }
+
+    // task 3: move to crypt
+    public void  MoveToCrypt(StartingPosition startPos) {
 
 
-         }
-}
-    // methods used in Autonomous mode
+    }
+} // end of class (no code beyond this point)
