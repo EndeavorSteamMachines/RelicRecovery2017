@@ -41,45 +41,43 @@ import com.qualcomm.robotcore.util.Range;
 
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
- *
+ * <p>
  * What we control:
- *
- *   Motors
- *    left_motor
- *    right_motor
- *    lifter_motor
- *
- *   Servos
- *    glyph_servo
- *    gem_servoA (autonomous mode only)
- *    gem_servoB (autonomous mode only)
- *
- *   Sensors
- *    gem_sensor (autonomous mode only)
- *    camera (autonomous mode only)
- *    imu (autonomous mode only)
- *
- *
+ * <p>
+ * Motors
+ * left_motor
+ * right_motor
+ * lifter_motor
+ * <p>
+ * Servos
+ * glyph_servo
+ * gem_servoA (autonomous mode only)
+ * gem_servoB (autonomous mode only)
+ * <p>
+ * Sensors
+ * gem_sensor (autonomous mode only)
+ * camera (autonomous mode only)
+ * imu (autonomous mode only)
+ * <p>
+ * <p>
  * How we control:
- *
- *   Gamepad1 will control the left_motor and right_motor.
- *   Gamepad2 will control everything else.
- *
- *   Gamepad1 definitions:
- *    left_stick_y (up and down) controls forward or backward
- *    right_stick_x (side to side) controls turning
- *
- *   Gamepad2 definitions:
- *    left_stick_y (up and down) controls lifter up and down
- *    X button (press) opens glyph_servo
- *    B button (press) closes glyph_servo
- *
+ * <p>
+ * Gamepad1 will control the left_motor and right_motor.
+ * Gamepad2 will control everything else.
+ * <p>
+ * Gamepad1 definitions:
+ * left_stick_y (up and down) controls forward or backward
+ * right_stick_x (side to side) controls turning
+ * <p>
+ * Gamepad2 definitions:
+ * left_stick_y (up and down) controls lifter up and down
+ * X button (press) opens glyph_servo
+ * B button (press) closes glyph_servo
  **/
 
-@TeleOp(name="VerificationOpmode Mode", group="TeleOp")
+@TeleOp(name = "VerificationOpmode Mode", group = "TeleOp")
 //@Disabled
-public class VerificationOpmode extends OpMode
-{
+public class VerificationOpmode extends OpMode {
 
     // Constructor: instantiate objects used in this class
     //  motors
@@ -87,7 +85,7 @@ public class VerificationOpmode extends OpMode
     private DcMotor right_motor = null;
     private DcMotor lifter_motor = null;
     //sensors
-    private Sensor  IMU = null;
+    private Sensor IMU = null;
     //  servos
     private Servo glyph_servo = null;
     private Servo gem_servoA = null;
@@ -107,7 +105,7 @@ public class VerificationOpmode extends OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
-    @Override
+    @Overrides
     public void init() {
         // let drivers know that initialization has begun
         telemetry.addData("Status", "Initializing");
@@ -115,17 +113,17 @@ public class VerificationOpmode extends OpMode
         // Initialize hardware variables
         // NOTE: deviceName must match config file on phone
         // motors
-        left_motor = hardwareMap.get(DcMotor.class,"left_motor");
+        left_motor = hardwareMap.get(DcMotor.class, "left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        right_motor = hardwareMap.get(DcMotor.class,"right_motor");
+        right_motor = hardwareMap.get(DcMotor.class, "right_motor");
         right_motor.setDirection(DcMotor.Direction.REVERSE);
 
-        lifter_motor = hardwareMap.get(DcMotor.class,"lifter_motor");
+        lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
         lifter_motor.setDirection(DcMotor.Direction.FORWARD);
 
         // servos
-        glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
+        glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
 
@@ -133,13 +131,13 @@ public class VerificationOpmode extends OpMode
         gem_servoA.setDirection(Servo.Direction.FORWARD);
         gem_servoA.setPosition(GEM_SERVO_A_UP);
 
-        gem_servoB =  hardwareMap.get(Servo.class, "gem_servoB");
+        gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
         gem_servoB.setDirection(Servo.Direction.REVERSE);
         gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
         // how do we set limits on servo???
 
 //        find sensors on hw map
-        IMU = hardwareMap.get(Sensor.class,"IMU");
+        // IMU = hardwareMap.get(Sensor.class,"IMU");
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -195,22 +193,22 @@ public class VerificationOpmode extends OpMode
             glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
 
 //        buttons A and Y will move gem_servoA up and down on gamepad2
-        if (gamepad1.a)
+        if (gamepad2.a)
             gem_servoA.setPosition(GEM_SERVO_A_DOWN);
-        else if (gamepad1.y)
+        else if (gamepad2.y)
             gem_servoA.setPosition(GEM_SERVO_A_UP);
 
 //        buttons lb and rb will fold and unfold gem_servoB on gamepad2
-        if (gamepad1.left_bumper)
+        if (gamepad2.left_bumper)
             gem_servoB.setPosition(GEM_SERVO_B_OPEN);
-        else if (gamepad1.right_bumper)
+        else if (gamepad2.right_bumper)
             gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
 
         // Telemetry: show elapsed time, wheel power, lifter motor, servos, and possibly sensors
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", "Lifter motor (%.2f)", leftPower, rightPower, lifterPower);
-        telemetry.addData( "Gem Servo A pos. (%.2f)", "Gem Servo B pos.", gem_servoA.getPosition(), gem_servoB.getPosition());
+        telemetry.addData("Gem Servo A pos. (%.2f)", "Gem Servo B pos.", gem_servoA.getPosition(), gem_servoB.getPosition());
         telemetry.addData("Glyph Servo pos. (%.2f)", glyph_servo.getPosition());
 //        telemetry.addData("IMU", IMU);
     }
