@@ -52,7 +52,7 @@ public class VuforiaCamera {
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
 
-    public void run(HardwareMap hardwareMap, Telemetry telemetry, double waitTime) {
+    public RelicRecoveryVuMark run(HardwareMap hardwareMap, Telemetry telemetry, double waitTime) {
 
         // initialize vuforia
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -78,16 +78,17 @@ public class VuforiaCamera {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         runtime.reset();
 
-        while (vuMark == RelicRecoveryVuMark.UNKNOWN || runtime.seconds() < waitTime) {
-            telemetry.addData("VuMark", "not visible");
+        while (vuMark == RelicRecoveryVuMark.UNKNOWN && runtime.seconds() < waitTime) {
+            //telemetry.addData("VuMark", "not visible");
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
         if (vuMark != RelicRecoveryVuMark.UNKNOWN)
             telemetry.addData("VuMark", "%s visible", vuMark);
         else
             telemetry.addData("VuMark", "not visible");
 
-        telemetry.update();
         relicTrackables.deactivate();
+        return vuMark;
     }
 }
 
