@@ -153,8 +153,8 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         // task 2: knock off other-colored gem
 //        GemBump(startPos);
 //
-        // task 3: move robot to crypt
-//      MoveToCrypt();
+//            // task 3: move robot to crypt
+//            MoveToCrypt();
 //
 //
 //            // task 4: place glyph
@@ -169,7 +169,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //        telemetry.addData("Status", "Run Time: " + runtime.toString());
 //        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
 
-        // run until the end of the match (driver presses STOP)
+//        // run until the end of the match (driver presses STOP)
 //        while (opModeIsActive() || timer is over 30 seconds ) {
 //            telemetry.addData("Status", "Waiting for driver to press STOP");
 //        }
@@ -180,11 +180,13 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         RelicRecoveryVuMark cryptoKey = RelicRecoveryVuMark.UNKNOWN; // default value
 
         // use vuforia code
-        ConceptVuMarkIdentification camera = new ConceptVuMarkIdentification();
-        camera.runOpMode();
-        camera.init();
-        camera.start(); // need to wait???
-        cryptoKey = camera.vuMark;
+//        VuforiaCamera camera = new VuforiaCamera();
+//        camera.runOpMode();
+//        camera.init();
+//        camera.start(); // need to wait???
+//
+//        camera.
+//        cryptoKey = camera.vuMark;
         return cryptoKey;
     }
 
