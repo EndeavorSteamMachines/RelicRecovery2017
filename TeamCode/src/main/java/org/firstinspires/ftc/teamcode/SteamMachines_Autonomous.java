@@ -34,45 +34,45 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller Autonomous Mode
- *
+ * <p>
  * What we control:
- *
+ * <p>
  * Motors
- *   left_motor
- *   right_motor
- *   lifter_motor
- *   gem_motor
- *
+ * left_motor
+ * right_motor
+ * lifter_motor
+ * gem_motor
+ * <p>
  * Servos
- *   glyph_servo
- *   gem_servo
- *
+ * glyph_servo
+ * gem_servo
+ * <p>
  * Sensors
- *   gem_sensor
- *   camera
- *
+ * gem_sensor
+ * camera
+ * <p>
  * How we control:
- *
- *   Gamepad1 will control the left_motor and right_motor.
- *   Gamepad2 will control everything else.
- *
- *   Gamepad1 definitions:
- *     left_stick_y (up and down) controls forward or backward
- *     right_stick_x (side to side) controls turning
- *
- *   Gamepad2 definitions:
- *     left_stick_y (up and down) controls lifter up and down
- *     X button (press) opens glyph_servo
- *     B button (press) closes glyph_servo
- *
- *   Tracking inputs:
- *     IMU heading (from the REV Expansion Hub)
- *     left_motor, right_motor position (from encoders)
- *
+ * <p>
+ * Gamepad1 will control the left_motor and right_motor.
+ * Gamepad2 will control everything else.
+ * <p>
+ * Gamepad1 definitions:
+ * left_stick_y (up and down) controls forward or backward
+ * right_stick_x (side to side) controls turning
+ * <p>
+ * Gamepad2 definitions:
+ * left_stick_y (up and down) controls lifter up and down
+ * X button (press) opens glyph_servo
+ * B button (press) closes glyph_servo
+ * <p>
+ * Tracking inputs:
+ * IMU heading (from the REV Expansion Hub)
+ * left_motor, right_motor position (from encoders)
  **/
 @Autonomous(name = "SteamMachines Autonomous Mode", group = "Linear Opmode")
 //@Disabled
@@ -95,12 +95,24 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
+    static double WHEEL_CIRC = 3.5 * 3.1415;
+    static int GEAR_RATIO = 40 / 56;
+    static int TICKS_PER_REV = 757;
+    static double COUNTS_PER_INCH = (TICKS_PER_REV * GEAR_RATIO) / WHEEL_CIRC;
+    static double CRYPT_WIDTH = 7.63; //inches
+    static double D_CENTER = 36;
+    static double D_RIGHT = D_CENTER - CRYPT_WIDTH;
+    static double D_LEFT = D_CENTER + CRYPT_WIDTH;
+
+    //757 ticks per revolution on matrix 12v motor
 
     // the starting position will be one of these
     // R1 and B1 closest to Relic Recovery Zone
     enum StartingPosition {
-       R1, R2, B1, B2
-    };
+        R1, R2, B1, B2
+    }
+
+    ;
 
     @Override
     public void runOpMode() {
@@ -143,18 +155,29 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
         // task 1: decode crypto-key
         telemetry.addData("Status", "Task 1 started");
-        RelicRecoveryVuMark cyptoKey = FindCryptoKey();
+        RelicRecoveryVuMark cryptoKey = FindCryptoKey();
         telemetry.addData("Status", "Task 1 finished");
         // need if statement here!
 
 
-
-
         // task 2: knock off other-colored gem
 //        GemBump(startPos);
-//
-//            // task 3: move robot to crypt
-//            MoveToCrypt();
+        double d_vertical;
+//            // task 3: move robot to cryptobox
+        if (cryptoKey == RelicRecoveryVuMark.CENTER)
+            d_vertical = D_CENTER;
+
+        else if (cryptoKey == RelicRecoveryVuMark.RIGHT)
+            d_vertical = D_RIGHT;
+
+        else if (cryptoKey == RelicRecoveryVuMark.LEFT)
+            d_vertical = D_LEFT;
+
+        else
+            d_vertical = D_CENTER;
+
+
+//        MoveToCrypt(d_vertical, d_vertical);
 //
 //
 //            // task 4: place glyph
@@ -189,8 +212,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //        cryptoKey = camera.vuMark;
 
         VuforiaCamera camera = new VuforiaCamera();
-        cryptoKey = camera.run(hardwareMap,telemetry,2);
-
+        cryptoKey = camera.run(hardwareMap, telemetry, 2);
 
 
         return cryptoKey;
@@ -203,8 +225,14 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //    }
 
     // task 3: move to crypt
-    public void  MoveToCrypt(StartingPosition startPos) {
-
+    public void MoveToCrypt(double timeoutS,
+                            double leftInches, double rightInches,
+                            double speed) {
+        int leftTarget;
+        int rightTarget;
+        if (opModeIsActive()) {
+//            left = robot.leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+        }
 
     }
 } // end of class (no code beyond this point)
