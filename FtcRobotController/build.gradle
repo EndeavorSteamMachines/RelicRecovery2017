@@ -1,3 +1,5 @@
+import com.android.build.gradle.LibraryExtension
+
 //
 // build.gradle in FtcRobotController
 //
@@ -18,12 +20,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-}
 
-repositories {
-    flatDir {
-        dirs '../libs'
+
+
+    repositories {
+        flatDir {
+            dirs '../libs'
+        }
     }
 }
-
 apply from: 'build.release.gradle'
