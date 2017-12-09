@@ -147,7 +147,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Task 1 finished");
         // need if statement here!
 
-        telemetry.addData("VuMark", "not visible");
+
 
 
         // task 2: knock off other-colored gem
@@ -187,6 +187,12 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //
 //        camera.
 //        cryptoKey = camera.vuMark;
+
+        VuforiaCamera camera = new VuforiaCamera();
+        cryptoKey = camera.run(hardwareMap,telemetry,2);
+
+
+
         return cryptoKey;
     }
 
