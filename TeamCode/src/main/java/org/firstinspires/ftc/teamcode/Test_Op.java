@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.Range;
 //import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
 
 /**
- * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
+ * FTC ENDEAVOR STEAM MACHINE Robot Controller Test_Op Mode
  * <p>
  * What we control:
  * <p>
