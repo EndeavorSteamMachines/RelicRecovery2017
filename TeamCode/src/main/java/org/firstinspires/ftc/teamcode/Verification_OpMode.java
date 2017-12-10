@@ -41,43 +41,43 @@ import com.qualcomm.robotcore.util.Range;
 
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
- * <p>
+ *
  * What we control:
- * <p>
- * Motors
- * left_motor
- * right_motor
- * lifter_motor
- * <p>
- * Servos
- * glyph_servo
- * gem_servoA (autonomous mode only)
- * gem_servoB (autonomous mode only)
- * <p>
- * Sensors
- * gem_sensor (autonomous mode only)
- * camera (autonomous mode only)
- * imu (autonomous mode only)
- * <p>
- * <p>
+ *
+ *  Motors
+ *      left_motor
+ *      right_motor
+ *      lifter_motor
+ *
+ *  Servos
+ *      glyph_servo
+ *      gem_servoA (autonomous mode only)
+ *      gem_servoB (autonomous mode only)
+ *
+ *  Sensors
+ *      gem_sensor (autonomous mode only)
+ *      camera (autonomous mode only)
+ *      imu (autonomous mode only)
+ *
+ *
  * How we control:
- * <p>
- * Gamepad1 will control the left_motor and right_motor.
- * Gamepad2 will control everything else.
- * <p>
- * Gamepad1 definitions:
- * left_stick_y (up and down) controls forward or backward
- * right_stick_x (side to side) controls turning
- * <p>
- * Gamepad2 definitions:
- * left_stick_y (up and down) controls lifter up and down
- * X button (press) opens glyph_servo
- * B button (press) closes glyph_servo
+ *
+ *  Gamepad1 will control the left_motor and right_motor.
+ *  Gamepad2 will control everything else.
+ *
+ *  Gamepad1 definitions:
+ *      left_stick_y (up and down) controls forward or backward
+ *      right_stick_x (side to side) controls turning
+ *
+ *   Gamepad2 definitions:
+ *      left_stick_y (up and down) controls lifter up and down
+ *      X button (press) opens glyph_servo
+ *      B button (press) closes glyph_servo
  **/
 
-@TeleOp(name = "VerificationOpmode Mode", group = "TeleOp")
+@TeleOp(name = "Verification OpMode", group = "TeleOp")
 //@Disabled
-public class VerificationOpmode extends OpMode {
+public class Verification_OpMode extends OpMode {
 
     // Constructor: instantiate objects used in this class
     //  motors
@@ -93,26 +93,25 @@ public class VerificationOpmode extends OpMode {
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.45;    // 0 degrees
-    static double GLYPH_SERVO_CLOSED = 0.9;// 0.4 * 180 = 72 degrees
+    static double GLYPH_SERVO_OPEN = 0.45;  // value * 180 = total degrees
+    static double GLYPH_SERVO_CLOSED = 0.9;
 
     static double GEM_SERVO_A_DOWN = 0.8;
-    static double GEM_SERVO_A_UP = 0.1;
+    static double GEM_SERVO_A_UP = 0.1;     // starts in up position
 
-    static double GEM_SERVO_B_FOLDED = 0.0;
+    static double GEM_SERVO_B_FOLDED = 0.0; // starts in stowed position
     static double GEM_SERVO_B_OPEN = 1.0;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
-    @Overrides
+    @Override
     public void init() {
         // let drivers know that initialization has begun
         telemetry.addData("Status", "Initializing");
 
         // Initialize hardware variables
-        // NOTE: deviceName must match config file on phone
-        // motors
+        // NOTE: deviceName must match config file on phone motors
         left_motor = hardwareMap.get(DcMotor.class, "left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -134,7 +133,6 @@ public class VerificationOpmode extends OpMode {
         gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
         gem_servoB.setDirection(Servo.Direction.REVERSE);
         gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
-        // how do we set limits on servo???
 
 //        find sensors on hw map
         // IMU = hardwareMap.get(Sensor.class,"IMU");
@@ -149,6 +147,7 @@ public class VerificationOpmode extends OpMode {
      */
     @Override
     public void init_loop() {
+        telemetry.addData("Status", "INIT has been pressed");
     }
 
     /*
@@ -156,7 +155,9 @@ public class VerificationOpmode extends OpMode {
      */
     @Override
     public void start() {
+
         runtime.reset();
+        telemetry.addData("Status", "PLAY has been pressed");
     }
 
     /*
@@ -192,13 +193,13 @@ public class VerificationOpmode extends OpMode {
         else if (gamepad2.b)
             glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
 
-//        buttons A and Y will move gem_servoA up and down on gamepad2
+       //  buttons A and Y will move gem_servoA up and down on gamepad2
         if (gamepad2.a)
             gem_servoA.setPosition(GEM_SERVO_A_DOWN);
         else if (gamepad2.y)
             gem_servoA.setPosition(GEM_SERVO_A_UP);
 
-//        buttons lb and rb will fold and unfold gem_servoB on gamepad2
+        //  buttons lb and rb will fold and unfold gem_servoB on gamepad2
         if (gamepad2.left_bumper)
             gem_servoB.setPosition(GEM_SERVO_B_OPEN);
         else if (gamepad2.right_bumper)
@@ -218,6 +219,7 @@ public class VerificationOpmode extends OpMode {
      */
     @Override
     public void stop() {
+        telemetry.addData("Status", "STOPPED");
     }
 
 }

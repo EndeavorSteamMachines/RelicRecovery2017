@@ -69,24 +69,22 @@ public class VuforiaCamera {
          * but differ in their instance id information.
          * @see VuMarkInstanceId
          */
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
-        relicTrackables.activate();
+        relicTrackables.activate(); // don't know what this does, but it was in the example code
 
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        // reset the timer
         runtime.reset();
+        // retrieve vuMark
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
+        // wait until either VuMark is identified or waitTime is exceeded
         while (vuMark == RelicRecoveryVuMark.UNKNOWN && runtime.seconds() < waitTime) {
-            //telemetry.addData("VuMark", "not visible");
+            telemetry.addData("VuMark", "trying to identify");
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN)
-            telemetry.addData("VuMark", "%s visible", vuMark);
-        else
-            telemetry.addData("VuMark", "not visible");
-
         relicTrackables.deactivate();
         return vuMark;
     }
