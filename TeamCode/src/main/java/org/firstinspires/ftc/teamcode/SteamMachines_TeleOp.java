@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -51,7 +50,7 @@ import com.qualcomm.robotcore.util.Range;
  *     glyph_servo
  *
  *   Sensors
- *     ?
+ *     (none configured for TeleOp mode as of yet)
  *
  * How we control:
  *
@@ -100,8 +99,7 @@ public class SteamMachines_TeleOp extends OpMode
         telemetry.addData("Status", "Initializing");
 
         // Initialize hardware variables
-        // NOTE: deviceName must match config file on phone
-        // motors
+        // NOTE: deviceName must match config file on phone motors
         left_motor = hardwareMap.get(DcMotor.class,"left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -130,6 +128,7 @@ public class SteamMachines_TeleOp extends OpMode
      */
     @Override
     public void init_loop() {
+            telemetry.addData("Status", "INIT has been pressed");
     }
 
     /*
@@ -138,6 +137,7 @@ public class SteamMachines_TeleOp extends OpMode
     @Override
     public void start() {
         runtime.reset();
+        telemetry.addData("Status", "PLAY has been pressed");
     }
 
     /*
@@ -168,12 +168,12 @@ public class SteamMachines_TeleOp extends OpMode
         int lifter_pos = lifter_motor.getCurrentPosition();
 
         //set paramaters for lifter_motor
-        if(lifterPower > JOYSTICK_DEADZONE)//joystick up/positive
+        if(lifterPower > JOYSTICK_DEADZONE)// joystick positive => up
             if(lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
                 lifter_motor.setPower(LIFTER_IDLE);
-        else if(lifterPower < -JOYSTICK_DEADZONE)//joystick down/negative
+        else if(lifterPower < -JOYSTICK_DEADZONE)//joystick negative => down
             if(lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else

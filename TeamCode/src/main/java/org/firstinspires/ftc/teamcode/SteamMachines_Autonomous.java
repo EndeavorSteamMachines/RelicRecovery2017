@@ -90,29 +90,26 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.4;    // 0.4 * 180 =  72 degrees
+    static double GLYPH_SERVO_OPEN = 0.4;    // 0.44 * 180 =  72 degrees
     static double GLYPH_SERVO_CLOSED = 0.9;  // 0.9 * 180 = 162 degrees
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
-    static double WHEEL_CIRC = 3.5 * 3.1415;
+    static double WHEEL_DIAMETER = 3.5; // inches
+    static double WHEEL_CIRC = WHEEL_DIAMETER * 3.1415;
     static int GEAR_RATIO = 40 / 56;
-    static int TICKS_PER_REV = 757;
+    static int TICKS_PER_REV = 757; // matrix 12v motor (value found online)
     static double COUNTS_PER_INCH = (TICKS_PER_REV * GEAR_RATIO) / WHEEL_CIRC;
-    static double CRYPT_WIDTH = 7.63; //inches
-    static double D_CENTER = 36;
+    static double CRYPT_WIDTH = 7.63; //inches, width of crypt
+    static double D_CENTER = 36; // distance from center of pad to center of CENTER crypt
     static double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     static double D_LEFT = D_CENTER + CRYPT_WIDTH;
-
-    //757 ticks per revolution on matrix 12v motor
 
     // the starting position will be one of these
     // R1 and B1 closest to Relic Recovery Zone
     enum StartingPosition {
         R1, R2, B1, B2
-    }
-
-    ;
+    };
 
     @Override
     public void runOpMode() {
@@ -156,24 +153,26 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         // task 1: decode crypto-key
         telemetry.addData("Status", "Task 1 started");
         RelicRecoveryVuMark cryptoKey = FindCryptoKey();
-        telemetry.addData("Status", "Task 1 finished");
-        // need if statement here!
-
+        // display result
+        if (cryptoKey  != RelicRecoveryVuMark.UNKNOWN)
+            telemetry.addData("VuMark", "%s visible", cryptoKey.toString());
+        else
+            telemetry.addData("VuMark", "not visible");
 
         // task 2: knock off other-colored gem
 //        GemBump(startPos);
+
+
+        // task 3: move robot to cryptobox
         double d_vertical;
-//            // task 3: move robot to cryptobox
+
         if (cryptoKey == RelicRecoveryVuMark.CENTER)
             d_vertical = D_CENTER;
-
         else if (cryptoKey == RelicRecoveryVuMark.RIGHT)
             d_vertical = D_RIGHT;
-
         else if (cryptoKey == RelicRecoveryVuMark.LEFT)
             d_vertical = D_LEFT;
-
-        else
+        else // default to center if UNKOWN
             d_vertical = D_CENTER;
 
 
@@ -200,20 +199,18 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
     // task 1: decode cryptoKey
     public RelicRecoveryVuMark FindCryptoKey() {
-        RelicRecoveryVuMark cryptoKey = RelicRecoveryVuMark.UNKNOWN; // default value
+        RelicRecoveryVuMark cryptoKey;
 
         // use vuforia code
 //        VuforiaCamera camera = new VuforiaCamera();
 //        camera.runOpMode();
 //        camera.init();
 //        camera.start(); // need to wait???
-//
 //        camera.
 //        cryptoKey = camera.vuMark;
 
         VuforiaCamera camera = new VuforiaCamera();
         cryptoKey = camera.run(hardwareMap, telemetry, 2);
-
 
         return cryptoKey;
     }
