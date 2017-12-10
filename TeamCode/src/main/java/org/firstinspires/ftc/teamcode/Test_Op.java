@@ -45,19 +45,19 @@ import com.qualcomm.robotcore.util.Range;
  * What we control:
  * <p>
  * Motors
- * left_motor
- * right_motor
- * lifter_motor
+ * - left_motor
+ * - right_motor
+ * - lifter_motor
  * <p>
  * Servos
- * glyph_servo
- * gem_servoA (autonomous mode only)
- * gem_servoB (autonomous mode only)
+ * - glyph_servo
+ * - gem_servoA (autonomous mode)
+ * - gem_servoB (autonomous mode)
  * <p>
  * Sensors
- * gem_sensor (autonomous mode only)
- * camera (autonomous mode only)
- * imu (autonomous mode only)
+ * - gem_sensor (autonomous mode)
+ * - camera (autonomous mode)
+ * - imu (autonomous mode)
  * <p>
  * <p>
  * How we control:
@@ -66,17 +66,17 @@ import com.qualcomm.robotcore.util.Range;
  * Gamepad2 will control everything else.
  * <p>
  * Gamepad1 definitions:
- * left_stick_y (up and down) controls forward or backward
- * right_stick_x (side to side) controls turning
+ * - left_stick_y (up and down) controls forward or backward
+ * - right_stick_x (side to side) controls turning
  * <p>
  * Gamepad2 definitions:
- * left_stick_y (up and down) controls lifter up and down
- * X button (press) opens glyph_servo
- * B button (press) closes glyph_servo
- * A button (press) lower gem_servoA (boom)
- * Y button (press) raise gem_servoA (boom)
- * Left Bumper      open gem_servoB (knocker)
- * Right Bumper     stow gem_servoB (knocker)
+ * - left_stick_y (up and down) controls lifter up and down
+ * - X button (press) opens glyph_servo
+ * - B button (press) closes glyph_servo
+ * - A button (press) lower gem_servoA (boom)
+ * - Y button (press) raise gem_servoA (boom)
+ * - Left Bumper      open gem_servoB (knocker)
+ * - Right Bumper     stow gem_servoB (knocker)
  **/
 
 @TeleOp(name = "Testing OpMode", group = "TeleOp")
@@ -97,13 +97,11 @@ public class Test_Op extends OpMode {
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.45;  // value * 180 = total degrees
+    static double GLYPH_SERVO_OPEN = 0.40;  // value * 180 = total degrees
     static double GLYPH_SERVO_CLOSED = 0.9;
-
     static double GEM_SERVO_A_DOWN = 0.8;
     static double GEM_SERVO_A_UP = 0.1;     // starts in up position
-
-    static double GEM_SERVO_B_FOLDED = 0.0; // starts in stowed position
+    static double GEM_SERVO_B_FOLDED = 0.0; // starts in folded position
     static double GEM_SERVO_B_OPEN = 1.0;
 
     /*
@@ -123,7 +121,8 @@ public class Test_Op extends OpMode {
         right_motor.setDirection(DcMotor.Direction.REVERSE);
 
         lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
-        lifter_motor.setDirection(DcMotor.Direction.FORWARD);
+        lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // servos
         glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
@@ -142,7 +141,7 @@ public class Test_Op extends OpMode {
         // IMU = hardwareMap.get(Sensor.class,"IMU");
 
         // let drivers know that initialization has finished
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized!");
 
     }
 
@@ -223,7 +222,7 @@ public class Test_Op extends OpMode {
      */
     @Override
     public void stop() {
-        telemetry.addData("Status", "STOPPED");
+        telemetry.addData("Status", "STOP has been pressed");
     }
 
 }

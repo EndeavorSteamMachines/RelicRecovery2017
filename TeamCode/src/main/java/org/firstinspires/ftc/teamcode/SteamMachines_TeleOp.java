@@ -42,15 +42,15 @@ import com.qualcomm.robotcore.util.Range;
  * What we control:
  * <p>
  * Motors
- * left_motor
- * right_motor
- * lifter_motor
+ * - left_motor
+ * - right_motor
+ * - lifter_motor
  * <p>
  * Servos
- * glyph_servo
+ * - glyph_servo
  * <p>
  * Sensors
- * (none configured for TeleOp mode as of yet)
+ * (none configured for TeleOp)
  * <p>
  * How we control:
  * <p>
@@ -58,13 +58,13 @@ import com.qualcomm.robotcore.util.Range;
  * Gamepad2 will control everything else.
  * <p>
  * Gamepad1 definitions:
- * left_stick_y (up and down) controls forward or backward
- * right_stick_x (side to side) controls turning
+ * - left_stick_y (up and down) controls forward or backward
+ * - right_stick_x (side to side) controls turning
  * <p>
  * Gamepad2 definitions:
- * left_stick_y (up and down) controls lifter up and down
- * X button (press) opens glyph_servo
- * B button (press) closes glyph_servo
+ * - left_stick_y (up and down) controls lifter up and down
+ * - X button (press) opens glyph_servo
+ * - B button (press) closes glyph_servo
  **/
 
 @TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
@@ -117,7 +117,7 @@ public class SteamMachines_TeleOp extends OpMode {
         // how do we set limits on servo???
 
         // let drivers know that initialization has finished
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized!");
 
     }
 

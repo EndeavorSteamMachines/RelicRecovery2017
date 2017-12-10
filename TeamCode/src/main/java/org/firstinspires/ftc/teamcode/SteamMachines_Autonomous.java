@@ -43,36 +43,24 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * What we control:
  * <p>
  * Motors
- * left_motor
- * right_motor
- * lifter_motor
- * gem_motor
+ * - left_motor
+ * - right_motor
+ * - lifter_motor
  * <p>
  * Servos
- * glyph_servo
- * gem_servo
+ * - glyph_servo
+ * - gem_servoA (autonomous mode only)
+ * - gem_servoB (autonomous mode only)
  * <p>
  * Sensors
- * gem_sensor
- * camera
+ * - gem_sensor (autonomous mode only)
+ * - camera (autonomous mode only)
+ * - imu (autonomous mode only)
  * <p>
  * How we control:
  * <p>
- * Gamepad1 will control the left_motor and right_motor.
- * Gamepad2 will control everything else.
- * <p>
- * Gamepad1 definitions:
- * left_stick_y (up and down) controls forward or backward
- * right_stick_x (side to side) controls turning
- * <p>
- * Gamepad2 definitions:
- * left_stick_y (up and down) controls lifter up and down
- * X button (press) opens glyph_servo
- * B button (press) closes glyph_servo
- * <p>
- * Tracking inputs:
- * IMU heading (from the REV Expansion Hub)
- * left_motor, right_motor position (from encoders)
+ * - left_motor, right_motor position (from encoders)
+ * - IMU heading (from the REV Expansion Hub)
  **/
 @Autonomous(name = "SteamMachines Autonomous Mode", group = "Linear Opmode")
 //@Disabled
@@ -83,18 +71,22 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     private DcMotor left_motor = null;
     private DcMotor right_motor = null;
     private DcMotor lifter_motor = null;
-    private DcMotor gem_motor = null;
     //  servos
     private Servo glyph_servo = null;
-    private Servo gem_servo = null;
+    private Servo gem_servoA = null;
+    private Servo gem_servoB = null;
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.4;    // 0.44 * 180 =  72 degrees
+    static double GLYPH_SERVO_OPEN = 0.4;    // 0.4 * 180 =  72 degrees
     static double GLYPH_SERVO_CLOSED = 0.9;  // 0.9 * 180 = 162 degrees
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
+    static double GEM_SERVO_A_DOWN = 0.8;
+    static double GEM_SERVO_A_UP = 0.1;     // starts in up position
+    static double GEM_SERVO_B_FOLDED = 0.0; // starts in stowed position
+    static double GEM_SERVO_B_OPEN = 1.0;
     static double WHEEL_DIAMETER = 3.5; // inches
     static double WHEEL_CIRC = WHEEL_DIAMETER * 3.1415;
     static int GEAR_RATIO = 40 / 56;
@@ -139,13 +131,21 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
 
+        gem_servoA = hardwareMap.get(Servo.class, "gem_servoA");
+        gem_servoA.setDirection(Servo.Direction.FORWARD);
+        gem_servoA.setPosition(GEM_SERVO_A_UP);
+
+        gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
+        gem_servoB.setDirection(Servo.Direction.REVERSE);
+        gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
+
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        telemetry.addData("Status", "Started!");
+        telemetry.addData("Status", "PLAY has been pressed!");
 
         // timer may be used to limit amount of time for each task
         // double timer = runtime.time();
