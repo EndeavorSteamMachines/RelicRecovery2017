@@ -99,10 +99,12 @@ public class Test_Op extends OpMode {
     //  constants
     static double GLYPH_SERVO_OPEN = 0.40;  // value * 180 = total degrees
     static double GLYPH_SERVO_CLOSED = 0.9;
-    static double GEM_SERVO_A_DOWN = 0.8;
+    static double GEM_SERVO_A_DOWN = 0.55;
     static double GEM_SERVO_A_UP = 0.1;     // starts in up position
     static double GEM_SERVO_B_FOLDED = 0.0; // starts in folded position
-    static double GEM_SERVO_B_OPEN = 1.0;
+    static double GEM_SERVO_B_OPEN = 0.85;
+    static double GEM_SERVO_B_KNOCK_OUT = 1.0;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -135,7 +137,7 @@ public class Test_Op extends OpMode {
 
         gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
         gem_servoB.setDirection(Servo.Direction.REVERSE);
-        gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
+        gem_servoB.setPosition(GEM_SERVO_B_OPEN);
 
 //        find sensors on hw map
         // IMU = hardwareMap.get(Sensor.class,"IMU");
@@ -185,7 +187,7 @@ public class Test_Op extends OpMode {
 
         // ** lifter motor **
         //    left_stick_y (up and down) controls lifter up and down
-        double lift = gamepad2.left_stick_y;
+        double lift = -gamepad2.left_stick_y;
         double lifterPower = Range.clip(lift, -1.0, 1.0);
         lifter_motor.setPower(lifterPower);
 
@@ -197,22 +199,27 @@ public class Test_Op extends OpMode {
             glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
 
         //  buttons A and Y will move gem_servoA up and down on gamepad2
-        if (gamepad2.a)
+        if ((gamepad2.a) && (gem_servoB.getPosition() != GEM_SERVO_B_KNOCK_OUT))
             gem_servoA.setPosition(GEM_SERVO_A_DOWN);
         else if (gamepad2.y)
             gem_servoA.setPosition(GEM_SERVO_A_UP);
 
         //  buttons lb and rb will fold and unfold gem_servoB on gamepad2
-        if (gamepad2.left_bumper)
+        if (gamepad2.dpad_up)
             gem_servoB.setPosition(GEM_SERVO_B_OPEN);
-        else if (gamepad2.right_bumper)
+        else if (gamepad2.dpad_left)
             gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
+        else if(gamepad2.dpad_right)
+            gem_servoB.setPosition(GEM_SERVO_B_KNOCK_OUT);
+
 
         // Telemetry: show elapsed time, wheel power, lifter motor, servos, and possibly sensors
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", "Lifter motor (%.2f)", leftPower, rightPower, lifterPower);
-        telemetry.addData("Gem Servo A pos. (%.2f)", "Gem Servo B pos.", gem_servoA.getPosition(), gem_servoB.getPosition());
+        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lifter motor power (%.2f)", lifterPower);
+        telemetry.addData("lifter motor pos (%.2f)", lifter_motor.getCurrentPosition());
+        telemetry.addData("Gem Servos pos","Gem Servo A (%.2f), Gem Servo B (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
         telemetry.addData("Glyph Servo pos. (%.2f)", glyph_servo.getPosition());
 //        telemetry.addData("IMU", IMU);
     }
