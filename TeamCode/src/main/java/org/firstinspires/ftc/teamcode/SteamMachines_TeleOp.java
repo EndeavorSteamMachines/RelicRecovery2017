@@ -38,40 +38,38 @@ import com.qualcomm.robotcore.util.Range;
 
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
- *
+ * <p>
  * What we control:
- *
- *   Motors
- *     left_motor
- *     right_motor
- *     lifter_motor
- *
- *   Servos
- *     glyph_servo
- *
- *   Sensors
- *     (none configured for TeleOp mode as of yet)
- *
+ * <p>
+ * Motors
+ * left_motor
+ * right_motor
+ * lifter_motor
+ * <p>
+ * Servos
+ * glyph_servo
+ * <p>
+ * Sensors
+ * (none configured for TeleOp mode as of yet)
+ * <p>
  * How we control:
- *
- *   Gamepad1 will control the left_motor and right_motor.
- *   Gamepad2 will control everything else.
- *
- *   Gamepad1 definitions:
- *    left_stick_y (up and down) controls forward or backward
- *    right_stick_x (side to side) controls turning
- *
- *   Gamepad2 definitions:
- *    left_stick_y (up and down) controls lifter up and down
- *    X button (press) opens glyph_servo
- *    B button (press) closes glyph_servo
- *
+ * <p>
+ * Gamepad1 will control the left_motor and right_motor.
+ * Gamepad2 will control everything else.
+ * <p>
+ * Gamepad1 definitions:
+ * left_stick_y (up and down) controls forward or backward
+ * right_stick_x (side to side) controls turning
+ * <p>
+ * Gamepad2 definitions:
+ * left_stick_y (up and down) controls lifter up and down
+ * X button (press) opens glyph_servo
+ * B button (press) closes glyph_servo
  **/
 
-@TeleOp(name="SteamMachines TeleOp Mode", group="TeleOp")
+@TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
 //@Disabled
-public class SteamMachines_TeleOp extends OpMode
-{
+public class SteamMachines_TeleOp extends OpMode {
 
     // Constructor: instantiate objects used in this class.
     //  motors
@@ -83,8 +81,8 @@ public class SteamMachines_TeleOp extends OpMode
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.40;    // 0.4 * 180 = 72 degrees
-    static double GLYPH_SERVO_CLOSED = 0.90;  // 0.9 * 180 = 162 degrees
+    static double GLYPH_SERVO_OPEN = 0.4;
+    static double GLYPH_SERVO_CLOSED = 0.9;
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
@@ -100,20 +98,20 @@ public class SteamMachines_TeleOp extends OpMode
 
         // Initialize hardware variables
         // NOTE: deviceName must match config file on phone motors
-        left_motor = hardwareMap.get(DcMotor.class,"left_motor");
+        left_motor = hardwareMap.get(DcMotor.class, "left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        right_motor = hardwareMap.get(DcMotor.class,"right_motor");
+        right_motor = hardwareMap.get(DcMotor.class, "right_motor");
         right_motor.setDirection(DcMotor.Direction.REVERSE);
 
-        lifter_motor = hardwareMap.get(DcMotor.class,"lifter_motor");
+        lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
         lifter_motor.setTargetPosition(LIFTER_MIN_POS);
 
         // servos
-        glyph_servo = hardwareMap.get(Servo.class,"glyph_servo");
+        glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
         // how do we set limits on servo???
@@ -128,7 +126,7 @@ public class SteamMachines_TeleOp extends OpMode
      */
     @Override
     public void init_loop() {
-            telemetry.addData("Status", "INIT has been pressed");
+        telemetry.addData("Status", "INIT has been pressed");
     }
 
     /*
@@ -168,13 +166,13 @@ public class SteamMachines_TeleOp extends OpMode
         int lifter_pos = lifter_motor.getCurrentPosition();
 
         //set paramaters for lifter_motor
-        if(lifterPower > JOYSTICK_DEADZONE)// joystick positive => up
-            if(lifter_pos < LIFTER_MAX_POS)
+        if (lifterPower > JOYSTICK_DEADZONE)// joystick positive => up
+            if (lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
                 lifter_motor.setPower(LIFTER_IDLE);
-        else if(lifterPower < -JOYSTICK_DEADZONE)//joystick negative => down
-            if(lifter_pos > LIFTER_MIN_POS)
+        else if (lifterPower < -JOYSTICK_DEADZONE)//joystick negative => down
+            if (lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else
                 lifter_motor.setPower(0);
@@ -184,9 +182,9 @@ public class SteamMachines_TeleOp extends OpMode
         // ** glyph servo **
         //    buttons X and B will open or close the grabber
         if (gamepad2.b)
-            glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
-        else if (gamepad2.x)
             glyph_servo.setPosition(GLYPH_SERVO_OPEN);
+        else if (gamepad2.x)
+            glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
 
         // Telemetry: show elapsed time, wheel power, lifter motor
         // This can be whatever we want it to be.  We want info that helps the operators.

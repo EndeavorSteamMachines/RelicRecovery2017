@@ -41,43 +41,47 @@ import com.qualcomm.robotcore.util.Range;
 
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
- *
+ * <p>
  * What we control:
- *
- *  Motors
- *      left_motor
- *      right_motor
- *      lifter_motor
- *
- *  Servos
- *      glyph_servo
- *      gem_servoA (autonomous mode only)
- *      gem_servoB (autonomous mode only)
- *
- *  Sensors
- *      gem_sensor (autonomous mode only)
- *      camera (autonomous mode only)
- *      imu (autonomous mode only)
- *
- *
+ * <p>
+ * Motors
+ * left_motor
+ * right_motor
+ * lifter_motor
+ * <p>
+ * Servos
+ * glyph_servo
+ * gem_servoA (autonomous mode only)
+ * gem_servoB (autonomous mode only)
+ * <p>
+ * Sensors
+ * gem_sensor (autonomous mode only)
+ * camera (autonomous mode only)
+ * imu (autonomous mode only)
+ * <p>
+ * <p>
  * How we control:
- *
- *  Gamepad1 will control the left_motor and right_motor.
- *  Gamepad2 will control everything else.
- *
- *  Gamepad1 definitions:
- *      left_stick_y (up and down) controls forward or backward
- *      right_stick_x (side to side) controls turning
- *
- *   Gamepad2 definitions:
- *      left_stick_y (up and down) controls lifter up and down
- *      X button (press) opens glyph_servo
- *      B button (press) closes glyph_servo
+ * <p>
+ * Gamepad1 will control the left_motor and right_motor.
+ * Gamepad2 will control everything else.
+ * <p>
+ * Gamepad1 definitions:
+ * left_stick_y (up and down) controls forward or backward
+ * right_stick_x (side to side) controls turning
+ * <p>
+ * Gamepad2 definitions:
+ * left_stick_y (up and down) controls lifter up and down
+ * X button (press) opens glyph_servo
+ * B button (press) closes glyph_servo
+ * A button (press) lower gem_servoA (boom)
+ * Y button (press) raise gem_servoA (boom)
+ * Left Bumper      open gem_servoB (knocker)
+ * Right Bumper     stow gem_servoB (knocker)
  **/
 
-@TeleOp(name = "Verification OpMode", group = "TeleOp")
+@TeleOp(name = "Testing OpMode", group = "TeleOp")
 //@Disabled
-public class Verification_OpMode extends OpMode {
+public class Test_Op extends OpMode {
 
     // Constructor: instantiate objects used in this class
     //  motors
@@ -85,7 +89,7 @@ public class Verification_OpMode extends OpMode {
     private DcMotor right_motor = null;
     private DcMotor lifter_motor = null;
     //sensors
-    private Sensor IMU = null;
+    //private Sensor IMU = null;
     //  servos
     private Servo glyph_servo = null;
     private Servo gem_servoA = null;
@@ -193,7 +197,7 @@ public class Verification_OpMode extends OpMode {
         else if (gamepad2.b)
             glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
 
-       //  buttons A and Y will move gem_servoA up and down on gamepad2
+        //  buttons A and Y will move gem_servoA up and down on gamepad2
         if (gamepad2.a)
             gem_servoA.setPosition(GEM_SERVO_A_DOWN);
         else if (gamepad2.y)
