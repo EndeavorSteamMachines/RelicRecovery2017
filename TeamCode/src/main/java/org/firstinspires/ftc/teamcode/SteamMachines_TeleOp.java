@@ -97,18 +97,29 @@ public class SteamMachines_TeleOp extends OpMode {
         telemetry.addData("Status", "Initializing");
 
         // Initialize hardware variables
-        // NOTE: deviceName must match config file on phone motors
+        // NOTE: deviceName must match config file on phone
+        // motors
         left_motor = hardwareMap.get(DcMotor.class, "left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
+        left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         right_motor = hardwareMap.get(DcMotor.class, "right_motor");
         right_motor.setDirection(DcMotor.Direction.REVERSE);
+        right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
-        lifter_motor.setTargetPosition(LIFTER_MIN_POS);
+        // move lifter to down position???
+//        lifter_motor.setTargetPosition(LIFTER_MIN_POS); // or -6000?
+//        runtime.reset();
+//        lifter_motor.setPower(-0.5);
+//        while (lifter_motor.isBusy() && runtime.seconds() < 3) {
+//            telemetry.addData("Status", "resetting lifter position");
+//        }
+//        lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        lifter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // servos
         glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
@@ -165,13 +176,13 @@ public class SteamMachines_TeleOp extends OpMode {
         double lifterPower = Range.clip(lift, -1.0, 1.0);
         int lifter_pos = lifter_motor.getCurrentPosition();
 
-        //set paramaters for lifter_motor
-        if (lifterPower > JOYSTICK_DEADZONE)// joystick positive => up
+        //set parameters for lifter_motor
+        if (lifterPower > JOYSTICK_DEADZONE) // joystick positive => up
             if (lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
                 lifter_motor.setPower(LIFTER_IDLE);
-        else if (lifterPower < -JOYSTICK_DEADZONE)//joystick negative => down
+        else if (lifterPower < -JOYSTICK_DEADZONE) //joystick negative => down
             if (lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else
@@ -189,10 +200,10 @@ public class SteamMachines_TeleOp extends OpMode {
         // Telemetry: show elapsed time, wheel power, lifter motor
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Lifter motor (%.2f)", lifterPower);
-        telemetry.addData("lifter_motor.getCurrentPosition", lifter_motor.getCurrentPosition());
-        telemetry.addData("Glyph Servo position (%.2f)", glyph_servo.getPosition());
+        telemetry.addData("Drive Motors","left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lifter Motor Power","(%.2f)", lifterPower);
+        telemetry.addData("Lifter Motor Position","(%.2f)", lifter_motor.getCurrentPosition());
+        telemetry.addData("Glyph Servo Position","(%.2f)", glyph_servo.getPosition());
     }
 
     /*

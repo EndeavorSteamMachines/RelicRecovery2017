@@ -124,7 +124,8 @@ public class Test_Op extends OpMode {
 
         lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lifter_motor.setDirection(DcMotor.Direction.REVERSE);
 
         // servos
         glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
@@ -216,11 +217,11 @@ public class Test_Op extends OpMode {
         // Telemetry: show elapsed time, wheel power, lifter motor, servos, and possibly sensors
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Lifter motor power (%.2f)", lifterPower);
-        telemetry.addData("lifter motor pos (%.2f)", lifter_motor.getCurrentPosition());
-        telemetry.addData("Gem Servos pos","Gem Servo A (%.2f), Gem Servo B (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
-        telemetry.addData("Glyph Servo pos. (%.2f)", glyph_servo.getPosition());
+        telemetry.addData("Drive Motors","left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lifter Motor Power","(%.2f)", lifterPower);
+        telemetry.addData("Lifter Motor Position","(%.2f)", lifter_motor.getCurrentPosition());
+        telemetry.addData("Glyph Servo Position","(%.2f)", glyph_servo.getPosition());
+        telemetry.addData("Gem Servos Position","gem_servoA: (%.2f), gem_servoB: (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
 //        telemetry.addData("IMU", IMU);
     }
 

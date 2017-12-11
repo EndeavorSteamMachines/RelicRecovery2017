@@ -124,7 +124,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
-        lifter_motor.setTargetPosition(LIFTER_MIN_POS);
+        //lifter_motor.setTargetPosition(LIFTER_MIN_POS);
 
         // servos
         glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
@@ -189,7 +189,11 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //
 //        // Telemetry: one time snap shots, not like TeloOp mode!
 //        telemetry.addData("Status", "Run Time: " + runtime.toString());
-//        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+//        telemetry.addData("Drive Motors","left (%.2f), right (%.2f)", leftPower, rightPower);
+//        telemetry.addData("Lifter Motor Power","(%.2f)", lifterPower);
+//        telemetry.addData("Lifter Motor Position","(%.2f)", lifter_motor.getCurrentPosition());
+//        telemetry.addData("Gem Servos Position","gem_servoA: (%.2f), gem_servoB: (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
+//        telemetry.addData("Glyph Servo Position","(%.2f)", glyph_servo.getPosition());
 
 //        // run until the end of the match (driver presses STOP)
 //        while (opModeIsActive() || timer is over 30 seconds ) {
@@ -202,6 +206,11 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         RelicRecoveryVuMark cryptoKey;
 
         // use vuforia code
+        VuforiaCamera camera = new VuforiaCamera();
+        cryptoKey = camera.run(hardwareMap, telemetry, 2);
+
+        return cryptoKey;
+        //  first attempt - instantiate vuforio opmode
 //        VuforiaCamera camera = new VuforiaCamera();
 //        camera.runOpMode();
 //        camera.init();
@@ -209,10 +218,6 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //        camera.
 //        cryptoKey = camera.vuMark;
 
-        VuforiaCamera camera = new VuforiaCamera();
-        cryptoKey = camera.run(hardwareMap, telemetry, 2);
-
-        return cryptoKey;
     }
 
     // task 2: knock off gem (that's not our color)
