@@ -217,6 +217,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         cryptoKey = camera.run(hardwareMap, telemetry, 2);
 
         return cryptoKey;
+
         //  first attempt - instantiate vuforio opmode
 //        VuforiaCamera camera = new VuforiaCamera();
 //        camera.runOpMode();
