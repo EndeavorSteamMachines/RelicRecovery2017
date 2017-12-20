@@ -47,7 +47,7 @@ import com.qualcomm.robotcore.util.Range;
  * - lifter_motor
  * <p>
  * Servos
- * - glyph_servo
+ * - left_glyph_servo
  * <p>
  * Sensors
  * (none configured for TeleOp)
@@ -63,8 +63,8 @@ import com.qualcomm.robotcore.util.Range;
  * <p>
  * Gamepad2 definitions:
  * - left_stick_y (up and down) controls lifter up and down
- * - X button (press) opens glyph_servo
- * - B button (press) closes glyph_servo
+ * - left trigger (press) opens left_glyph_servo
+ * - right trigger (press) opens right_glyph_servo
  **/
 
 @TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
@@ -77,7 +77,8 @@ public class SteamMachines_TeleOp extends OpMode {
     private DcMotor right_motor = null;
     private DcMotor lifter_motor = null;
     //  servos
-    private Servo glyph_servo = null;
+    private Servo left_glyph_servo = null;
+    private Servo right_glyph_servo = null;
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
@@ -122,13 +123,16 @@ public class SteamMachines_TeleOp extends OpMode {
 //        lifter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // servos
-        glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
-        glyph_servo.setDirection(Servo.Direction.FORWARD);
-        glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-        // how do we set limits on servo???
+        left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
+        left_glyph_servo.setDirection(Servo.Direction.FORWARD);
+        left_glyph_servo.setPosition(GLYPH_SERVO_OPEN);
+
+        right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
+        right_glyph_servo.setDirection(Servo.Direction.FORWARD);
+        right_glyph_servo.setPosition(GLYPH_SERVO_OPEN);
 
         // let drivers know that initialization has finished
-        telemetry.addData("Status", "Initialized!");
+        telemetry.addData("Status", "Initialized");
 
     }
 
@@ -162,6 +166,8 @@ public class SteamMachines_TeleOp extends OpMode {
         // turn and drive depend on the current position of the joysticks
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
+        float leftGlyphPower = gamepad2.left_trigger;
+        float rightGlyphPower = -gamepad2.right_trigger;
 
         // use turn and drive to determine amount of power to apply to motors
         double leftPower = Range.clip(drive + turn, -1.0, 1.0);
@@ -198,18 +204,19 @@ public class SteamMachines_TeleOp extends OpMode {
 
         // ** glyph servo **
         //    buttons X and B will open or close the grabber
-        if (gamepad2.b)
-            glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-        else if (gamepad2.x)
-            glyph_servo.setPosition(GLYPH_SERVO_CLOSED);
+        left_glyph_servo.setPosition(leftGlyphPower);
+        right_glyph_servo.setPosition(rightGlyphPower);
 
-        // Telemetry: show elapsed time, wheel power, lifter motor
+        // Telemetry: show elapsed time, wheel power, lifter motor, and servo status
         // This can be whatever we want it to be.  We want info that helps the operators.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
-        telemetry.addData("Lifter Motor Position", "(%.2f)", lifter_motor.getCurrentPosition());
-        telemetry.addData("Glyph Servo Position", "(%.2f)", glyph_servo.getPosition());
+//        telemetry.addData("Status", "Run Time: " + runtime.toString());
+//        telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
+//        telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
+//        telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
+//        telemetry.addData("Lifter Motor Position", "(%.2f)", lifter_motor.getCurrentPosition());
+//        telemetry.addData("Left Glyph Servo Position", "(%.2f)", left_glyph_servo.getPosition());
+//        telemetry.addData("Right Glyph Servo Position", "(%.2f)", right_glyph_servo.getPosition());
+
     }
 
     /*

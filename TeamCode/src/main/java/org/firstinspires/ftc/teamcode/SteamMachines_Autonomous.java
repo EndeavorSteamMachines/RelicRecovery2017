@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -63,7 +64,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * - IMU heading (from the REV Expansion Hub)
  **/
 @Autonomous(name = "SteamMachines Autonomous Mode", group = "Autonomous")
-//@Disabled
+@Disabled
 public class SteamMachines_Autonomous extends LinearOpMode {
 
     // Constructor: instantiate objects used in this class.
@@ -137,7 +138,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         // sleep(1000); // wait 1000ms
 
         // servos
-        glyph_servo = hardwareMap.get(Servo.class, "glyph_servo");
+        glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
         glyph_servo.setDirection(Servo.Direction.FORWARD);
         glyph_servo.setPosition(GLYPH_SERVO_OPEN);
 
@@ -177,20 +178,20 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         gem_servoA.setPosition(GEM_SERVO_A_DOWN);
         sleep(1000);
         StartingPosition gemColor;
-        gemColor = scanGem();
+        //gemColor = scanGem();
 
-        if (gemColor == startColor) {
-            gem_servoB.setDirection(Servo.Direction.FORWARD);
-            gem_servoB.setPosition(GEM_SERVO_B_Bump);
-            sleep(500);
-            gem_servoB.setPosition(-GEM_SERVO_B_Bump);
-        }
-        else {
-            gem_servoB.setDirection(Servo.Direction.REVERSE);
-            gem_servoB.setPosition(GEM_SERVO_B_Bump);
-            sleep(500);
-            gem_servoB.setPosition(-GEM_SERVO_B_Bump);
-        }
+//        if (gemColor == startColor) {
+//            gem_servoB.setDirection(Servo.Direction.FORWARD);
+//            gem_servoB.setPosition(GEM_SERVO_B_Bump);
+//            sleep(500);
+//            gem_servoB.setPosition(-GEM_SERVO_B_Bump);
+//        }
+//        else {
+//            gem_servoB.setDirection(Servo.Direction.REVERSE);
+//            gem_servoB.setPosition(GEM_SERVO_B_Bump);
+//            sleep(500);
+//            gem_servoB.setPosition(-GEM_SERVO_B_Bump);
+//        }
 
         gem_servoA.setDirection(Servo.Direction.REVERSE);
         gem_servoA.setPosition(GEM_SERVO_A_UP);
