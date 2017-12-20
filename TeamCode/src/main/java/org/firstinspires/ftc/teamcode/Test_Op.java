@@ -210,18 +210,18 @@ public class Test_Op extends OpMode {
             gem_servoB.setPosition(GEM_SERVO_B_OPEN);
         else if (gamepad2.dpad_left)
             gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
-        else if(gamepad2.dpad_right)
+        else if (gamepad2.dpad_right)
             gem_servoB.setPosition(GEM_SERVO_B_KNOCK_OUT);
 
 
         // Telemetry: show elapsed time, wheel power, lifter motor, servos, and possibly sensors
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Drive Motors","left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Lifter Motor Power","(%.2f)", lifterPower);
-        telemetry.addData("Lifter Motor Position","(%.2f)", lifter_motor.getCurrentPosition());
-        telemetry.addData("Glyph Servo Position","(%.2f)", glyph_servo.getPosition());
-        telemetry.addData("Gem Servos Position","gem_servoA: (%.2f), gem_servoB: (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
+        telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
+        telemetry.addData("Lifter Motor Position", "(%.2f)", lifter_motor.getCurrentPosition());
+        telemetry.addData("Glyph Servo Position", "(%.2f)", glyph_servo.getPosition());
+        telemetry.addData("Gem Servos Position", "gem_servoA: (%.2f), gem_servoB: (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
 //        telemetry.addData("IMU", IMU);
     }
 

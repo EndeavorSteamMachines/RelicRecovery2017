@@ -176,19 +176,25 @@ public class SteamMachines_TeleOp extends OpMode {
         double lifterPower = Range.clip(lift, -1.0, 1.0);
         int lifter_pos = lifter_motor.getCurrentPosition();
 
-        //set parameters for lifter_motor
-        if (lifterPower > JOYSTICK_DEADZONE) // joystick positive => up
-            if (lifter_pos < LIFTER_MAX_POS)
-                lifter_motor.setPower(lifterPower);
-            else
-                lifter_motor.setPower(LIFTER_IDLE);
-        else if (lifterPower < -JOYSTICK_DEADZONE) //joystick negative => down
-            if (lifter_pos > LIFTER_MIN_POS)
-                lifter_motor.setPower(lifterPower);
-            else
-                lifter_motor.setPower(0);
+//        //set parameters for lifter_motor
+//        if (lifterPower > JOYSTICK_DEADZONE) // joystick positive => up
+//            if (lifter_pos < LIFTER_MAX_POS)
+//                lifter_motor.setPower(lifterPower);
+//            else
+//                lifter_motor.setPower(LIFTER_IDLE);
+//        else if (lifterPower < -JOYSTICK_DEADZONE) //joystick negative => down
+//            if (lifter_pos > LIFTER_MIN_POS)
+//                lifter_motor.setPower(lifterPower);
+//            else
+//                lifter_motor.setPower(0);
+//        else
+//            lifter_motor.setPower(LIFTER_IDLE);
+        if (lifterPower < -JOYSTICK_DEADZONE)
+            lifter_motor.setPower(lifterPower);
+        else if (lifterPower > JOYSTICK_DEADZONE)
+            lifter_motor.setPower(lifterPower);
         else
-            lifter_motor.setPower(LIFTER_IDLE);
+            lifter_motor.setPower(0);
 
         // ** glyph servo **
         //    buttons X and B will open or close the grabber
@@ -200,10 +206,10 @@ public class SteamMachines_TeleOp extends OpMode {
         // Telemetry: show elapsed time, wheel power, lifter motor
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Drive Motors","left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Lifter Motor Power","(%.2f)", lifterPower);
-        telemetry.addData("Lifter Motor Position","(%.2f)", lifter_motor.getCurrentPosition());
-        telemetry.addData("Glyph Servo Position","(%.2f)", glyph_servo.getPosition());
+        telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
+        telemetry.addData("Lifter Motor Position", "(%.2f)", lifter_motor.getCurrentPosition());
+        telemetry.addData("Glyph Servo Position", "(%.2f)", glyph_servo.getPosition());
     }
 
     /*
