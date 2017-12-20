@@ -85,8 +85,9 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     static double LIFTER_IDLE = 0.01;
     static double GEM_SERVO_A_DOWN = 0.8;
     static double GEM_SERVO_A_UP = 0.1;     // starts in up position
-    static double GEM_SERVO_B_FOLDED = 0.0; // starts in stowed position
-    static double GEM_SERVO_B_OPEN = 1.0;
+    static double GEM_SERVO_B_RETRACTED= 0.0; // starts in stowed position
+    static double GEM_SERVO_B_DEPLOYED = 1.0;
+    static int Gem_Servo_Direction = 1;
     static double WHEEL_DIAMETER = 3.5; // inches
     static double WHEEL_CIRC = WHEEL_DIAMETER * 3.1415;
     static double GEAR_RATIO = 40 / 56;
@@ -113,6 +114,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     public void runOpMode() {
 
         StartingPosition startPos = StartingPosition.B1;
+        StartingPosition startColor = StartingPosition.B1;
 
         // let drivers know that initialization has begun
         telemetry.addData("Status", "Initializing");
@@ -141,11 +143,11 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
         gem_servoA = hardwareMap.get(Servo.class, "gem_servoA");
         gem_servoA.setDirection(Servo.Direction.FORWARD);
-        gem_servoA.setPosition(GEM_SERVO_A_UP);
+        //gem_servoA.setPosition(GEM_SERVO_A_UP);
 
         gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
         gem_servoB.setDirection(Servo.Direction.REVERSE);
-        gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
+       // gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -168,7 +170,34 @@ public class SteamMachines_Autonomous extends LinearOpMode {
             telemetry.addData("VuMark", "not visible");
 
         // task 2: knock off other-colored gem
-//        GemBump(startPos);
+        gem_servoB.setDirection(Servo.Direction.FORWARD);
+        gem_servoB.setPosition(GEM_SERVO_B_DEPLOYED);
+        sleep(1000);
+        gem_servoA.setDirection(Servo.Direction.FORWARD);
+        gem_servoA.setPosition(GEM_SERVO_A_DOWN);
+        sleep(1000);
+        StartingPosition gemColor;
+        gemColor = scanGem();
+
+        if (gemColor == startColor) {
+            gem_servoB.setDirection(Servo.Direction.FORWARD);
+            gem_servoB.setPosition(GEM_SERVO_B_Bump);
+            sleep(500);
+            gem_servoB.setPosition(-GEM_SERVO_B_Bump);
+        }
+        else {
+            gem_servoB.setDirection(Servo.Direction.REVERSE);
+            gem_servoB.setPosition(GEM_SERVO_B_Bump);
+            sleep(500);
+            gem_servoB.setPosition(-GEM_SERVO_B_Bump);
+        }
+
+        gem_servoA.setDirection(Servo.Direction.REVERSE);
+        gem_servoA.setPosition(GEM_SERVO_A_UP);
+        gem_servoB.setDirection(Servo.Direction.REVERSE);
+        gem_servoB.setPosition(GEM_SERVO_B_RETRACTED);
+
+
 
 
         // task 3: move robot to cryptobox
@@ -229,10 +258,10 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     }
 
     // task 2: knock off gem (that's not our color)
-//    public void GemBump(StartingPosition startPos  ??? what else here Emma ???) {
-//
-//
-//    }
+    public void scanGem() {
+
+
+    }
 
     // task 3: move to crypt
     public void DriveInches(double speed,
