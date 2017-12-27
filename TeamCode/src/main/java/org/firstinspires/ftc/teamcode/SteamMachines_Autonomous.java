@@ -108,7 +108,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     static double RIGHT_SERVO_OPEN = 0.30;
     static double LEFT_SERVO_CLOSED = 0.95;
     static double RIGHT_SERVO_CLOSED = 0.05;
-    boolean TASK_1 = false;
+    boolean TASK_1 = true;
     boolean TASK_2 = true;
     boolean TASK_3 = false;
 
