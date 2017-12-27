@@ -101,16 +101,16 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     static double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     static double D_LEFT = D_CENTER + CRYPT_WIDTH;
     static double D_HORIZONTAL = 24 - (9 + 4); //distance to wall - (half of robot + 2/3 of glyph)
-    static double WHEELBASE = 18; //inches
+    static double WHEELBASE = 16; //inches
     static double TURN_CIRC = 3.1415 * (WHEELBASE * 2);
-    static double QUARTER_TURN = TURN_CIRC / 4; //inches
+    static double QUARTER_TURN = (TURN_CIRC - 4) / 4; //inches
     static double LEFT_SERVO_OPEN = 0.70;
     static double RIGHT_SERVO_OPEN = 0.30;
     static double LEFT_SERVO_CLOSED = 0.95;
     static double RIGHT_SERVO_CLOSED = 0.05;
     boolean TASK_1 = false;
-    boolean TASK_2 = true;
-    boolean TASK_3 = false;
+    boolean TASK_2 = false;
+    boolean TASK_3 = true;
 
     // the starting position will be one of these
     // R1 and B1 closest to Relic Recovery Zone
@@ -272,11 +272,11 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //                telemetry.update();
 //            }
             //movement from B1 to align in front of crypt
-            DriveInches(0.9, d_vertical, d_vertical, 10);
+            DriveInches(0.5, d_vertical, d_vertical, 10);
             //turn to face crypt
-            DriveInches(0.4, 0, QUARTER_TURN, 3);
+            DriveInches(0.3, -QUARTER_TURN, QUARTER_TURN, 3);
             //drive to crypt
-            DriveInches(0.6, D_HORIZONTAL, D_HORIZONTAL, 3);
+            DriveInches(0.3, 6, 6, 3);
             //drop glyph
 //            glyph_servo.setPosition(GLYPH_SERVO_OPEN);
             //backup 1 inch
@@ -376,7 +376,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
             runtime.reset();
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (left_motor.isBusy() && right_motor.isBusy())) {
+                    (left_motor.isBusy() || right_motor.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Target", "Running to %5d , %5d", newLeftTarget, newRightTarget);
