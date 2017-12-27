@@ -101,7 +101,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     static double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     static double D_LEFT = D_CENTER + CRYPT_WIDTH;
     static double D_HORIZONTAL = 24 - (9 + 4); //distance to wall - (half of robot + 2/3 of glyph)
-    static double WHEELBASE = 18; //inches
+    static double WHEELBASE = 16; //inches
     static double TURN_CIRC = 3.1415 * (WHEELBASE * 2);
     static double QUARTER_TURN = TURN_CIRC / 4; //inches
     static double LEFT_SERVO_OPEN = 0.70;
