@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
@@ -64,7 +65,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * - IMU heading (from the REV Expansion Hub)
  **/
 @Autonomous(name = "SteamMachines Autonomous Mode", group = "Autonomous")
-@Disabled
+//@Disabled
 public class SteamMachines_Autonomous extends LinearOpMode {
 
     // Constructor: instantiate objects used in this class.
@@ -73,7 +74,8 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     private DcMotor right_motor = null;
     private DcMotor lifter_motor = null;
     //  servos
-    private Servo glyph_servo = null;
+    private Servo left_glyph_servo = null;
+    private Servo right_glyph_servo = null;
     private Servo gem_servoA = null;
     private Servo gem_servoB = null;
     //  timer
@@ -85,23 +87,30 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
     static double GEM_SERVO_A_DOWN = 0.8;
-    static double GEM_SERVO_A_UP = 0.1;     // starts in up position
-    static double GEM_SERVO_B_RETRACTED= 0.0; // starts in stowed position
+    static double GEM_SERVO_A_UP = 0.1;       // starts in up position
+    static double GEM_SERVO_B_RETRACTED = 0.0; // starts in stowed position
     static double GEM_SERVO_B_DEPLOYED = 1.0;
     static int Gem_Servo_Direction = 1;
     static double WHEEL_DIAMETER = 3.5; // inches
     static double WHEEL_CIRC = WHEEL_DIAMETER * 3.1415;
-    static double GEAR_RATIO = 40 / 56;
+    static double GEAR_RATIO = 56 / 40;
     static double TICKS_PER_REV = 757; // matrix 12v motor (value found online)
-    static double COUNTS_PER_INCH = (TICKS_PER_REV * GEAR_RATIO) / WHEEL_CIRC;
+    static double COUNTS_PER_INCH = TICKS_PER_REV / (WHEEL_CIRC * GEAR_RATIO);
     static double CRYPT_WIDTH = 7.63; //inches, width of crypt
     static double D_CENTER = 36; // distance from center of pad to center of CENTER crypt
     static double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     static double D_LEFT = D_CENTER + CRYPT_WIDTH;
     static double D_HORIZONTAL = 24 - (9 + 4); //distance to wall - (half of robot + 2/3 of glyph)
-    static double WHEELBASE = 18;//inches
+    static double WHEELBASE = 18; //inches
     static double TURN_CIRC = 3.1415 * (WHEELBASE * 2);
-    static double QUARTER_TURN = TURN_CIRC / 4;//inches
+    static double QUARTER_TURN = TURN_CIRC / 4; //inches
+    static double LEFT_SERVO_OPEN = 0.70;
+    static double RIGHT_SERVO_OPEN = 0.30;
+    static double LEFT_SERVO_CLOSED = 0.95;
+    static double RIGHT_SERVO_CLOSED = 0.05;
+    boolean TASK_1 = false;
+    boolean TASK_2 = true;
+    boolean TASK_3 = false;
 
     // the starting position will be one of these
     // R1 and B1 closest to Relic Recovery Zone
@@ -112,7 +121,10 @@ public class SteamMachines_Autonomous extends LinearOpMode {
     ;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
+
+
+        sleep(100);
 
         StartingPosition startPos = StartingPosition.B1;
         StartingPosition startColor = StartingPosition.B1;
@@ -138,9 +150,13 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         // sleep(1000); // wait 1000ms
 
         // servos
-        glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
-        glyph_servo.setDirection(Servo.Direction.FORWARD);
-        glyph_servo.setPosition(GLYPH_SERVO_OPEN);
+        left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
+        left_glyph_servo.setDirection(Servo.Direction.FORWARD);
+        left_glyph_servo.setPosition(LEFT_SERVO_CLOSED);
+
+        right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
+        right_glyph_servo.setDirection(Servo.Direction.FORWARD);
+        right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
 
         gem_servoA = hardwareMap.get(Servo.class, "gem_servoA");
         gem_servoA.setDirection(Servo.Direction.FORWARD);
@@ -148,7 +164,7 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
         gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
         gem_servoB.setDirection(Servo.Direction.REVERSE);
-       // gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
+        // gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -160,25 +176,57 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
         // timer may be used to limit amount of time for each task
         // double timer = runtime.time();
+        RelicRecoveryVuMark cryptoKey = RelicRecoveryVuMark.CENTER;
 
-        // task 1: decode crypto-key
-        telemetry.addData("Status", "Task 1 started");
-        RelicRecoveryVuMark cryptoKey = FindCryptoKey();
-        // display result
-        if (cryptoKey != RelicRecoveryVuMark.UNKNOWN)
-            telemetry.addData("VuMark", "%s visible", cryptoKey.toString());
-        else
-            telemetry.addData("VuMark", "not visible");
+        if (TASK_1) {
+            // task 1: decode crypto-key
+            telemetry.addData("Status", "Task 1 started");
+            telemetry.update();
+            cryptoKey = FindCryptoKey();
+            // display result
+            runtime.reset();
+            while (runtime.seconds() < 5) {
+                if (cryptoKey != RelicRecoveryVuMark.UNKNOWN) {
+                    telemetry.addData("Status", "Run Time: " + runtime.toString());
+                    telemetry.addData("VuMark", "%s visible", cryptoKey.toString());
+                    telemetry.update();
+                } else {
+                    telemetry.addData("Status", "Run Time: " + runtime.toString());
+                    telemetry.addData("VuMark", "not visible");
+                    telemetry.update();
+                }
 
-        // task 2: knock off other-colored gem
-        gem_servoB.setDirection(Servo.Direction.FORWARD);
-        gem_servoB.setPosition(GEM_SERVO_B_DEPLOYED);
-        sleep(1000);
-        gem_servoA.setDirection(Servo.Direction.FORWARD);
-        gem_servoA.setPosition(GEM_SERVO_A_DOWN);
-        sleep(1000);
-        StartingPosition gemColor;
-        //gemColor = scanGem();
+            }
+
+        }
+        if (TASK_2) {
+            // task 2: knock off other-colored gem
+
+            runtime.reset();
+            while (runtime.seconds() < 3) {
+                telemetry.addData("Status", "Task 2 started");
+                telemetry.update();
+            }
+//            gem_servoB.setDirection(Servo.Direction.FORWARD);
+//            gem_servoB.setPosition(GEM_SERVO_B_DEPLOYED);
+//            sleep(1000);
+//            gem_servoA.setDirection(Servo.Direction.FORWARD);
+//            gem_servoA.setPosition(GEM_SERVO_A_DOWN);
+//            sleep(1000);
+//            StartingPosition gemColor;
+            DetectRed gemRed = new DetectRed();
+
+            boolean gemRedFlag = gemRed.run(hardwareMap, telemetry);
+            runtime.reset();
+            while (runtime.seconds() < 5) {
+                if (gemRedFlag) {
+                    telemetry.addData("GemColor", "RED");
+                    telemetry.update();
+                } else {
+                    telemetry.addData("GemColor", "BLUE");
+                    telemetry.update();
+                }
+            }
 
 //        if (gemColor == startColor) {
 //            gem_servoB.setDirection(Servo.Direction.FORWARD);
@@ -193,39 +241,54 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 //            gem_servoB.setPosition(-GEM_SERVO_B_Bump);
 //        }
 
-        gem_servoA.setDirection(Servo.Direction.REVERSE);
-        gem_servoA.setPosition(GEM_SERVO_A_UP);
-        gem_servoB.setDirection(Servo.Direction.REVERSE);
-        gem_servoB.setPosition(GEM_SERVO_B_RETRACTED);
-
-
-
-
-        // task 3: move robot to cryptobox
-        double d_vertical;
-
-        switch (cryptoKey) {
-            case LEFT:
-                d_vertical = D_LEFT;
-            case RIGHT:
-                d_vertical = D_RIGHT;
-            default:
-                d_vertical = D_CENTER;
-
+//            gem_servoA.setDirection(Servo.Direction.REVERSE);
+//            gem_servoA.setPosition(GEM_SERVO_A_UP);
+//            gem_servoB.setDirection(Servo.Direction.REVERSE);
+//            gem_servoB.setPosition(GEM_SERVO_B_RETRACTED);
         }
+        if (TASK_3) {
+            runtime.reset();
+            while (runtime.seconds() < 3) {
+                telemetry.addData("Status", "Task 3 started");
+                telemetry.update();
+            }
 
-        //movement from B1 to align in front of crypt
-        DriveInches(0.9, d_vertical, d_vertical, 5);
-        //turn to face crypt
-        DriveInches(0.4, 0, QUARTER_TURN, 3);
-        //drive to crypt
-        DriveInches(0.6, D_HORIZONTAL, D_HORIZONTAL, 3);
-        //drop glyph
-        glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-        //backup 1 inch
-        DriveInches(-0.3, 1, 1, 2);
-        // @TODO: break opmode
+            // task 3: move robot to cryptobox
+            double d_vertical;
 
+            switch (cryptoKey) {
+                case LEFT:
+                    d_vertical = D_LEFT;
+                case RIGHT:
+                    d_vertical = D_RIGHT;
+                default:
+                    d_vertical = D_CENTER;
+
+            }
+
+//            runtime.reset();
+//            while (runtime.seconds() < 3) {
+//                telemetry.addData("Preparing to move by d_vertical: ", d_vertical);
+//                telemetry.update();
+//            }
+            //movement from B1 to align in front of crypt
+            DriveInches(0.9, d_vertical, d_vertical, 10);
+            //turn to face crypt
+            DriveInches(0.4, 0, QUARTER_TURN, 3);
+            //drive to crypt
+            DriveInches(0.6, D_HORIZONTAL, D_HORIZONTAL, 3);
+            //drop glyph
+//            glyph_servo.setPosition(GLYPH_SERVO_OPEN);
+            //backup 1 inch
+            DriveInches(-0.3, 1, 1, 2);
+
+//            runtime.reset();
+//            while (runtime.seconds() < 3) {
+//                telemetry.addData("Status", "Task 3 finished");
+//                telemetry.update();
+//            }
+//            // @TODO: break opmode
+        }
 
 //        // Telemetry: one time snap shots, not like TeloOp mode!
 //        telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -240,12 +303,13 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
     // task 1: decode cryptoKey
     public RelicRecoveryVuMark FindCryptoKey() {
+        telemetry.addData("FindCryptoKey", "have entered method");
+        telemetry.update();
         RelicRecoveryVuMark cryptoKey;
 
         // use vuforia code
         VuforiaCamera camera = new VuforiaCamera();
-        cryptoKey = camera.run(hardwareMap, telemetry, 2);
-
+        cryptoKey = camera.run(hardwareMap, telemetry, 5);
         return cryptoKey;
 
         //  first attempt - instantiate vuforio opmode
@@ -258,11 +322,11 @@ public class SteamMachines_Autonomous extends LinearOpMode {
 
     }
 
-    // task 2: knock off gem (that's not our color)
-    public void scanGem() {
-
-
-    }
+    // task 2: knock off gem (that's not our colour)
+//    public void scanGem() {
+//
+//
+//    }
 
     // task 3: move to crypt
     public void DriveInches(double speed,
@@ -271,31 +335,52 @@ public class SteamMachines_Autonomous extends LinearOpMode {
         int newLeftTarget;
         int newRightTarget;
 
+//        runtime.reset();
+//        while (runtime.seconds() < 5) {
+//            telemetry.addData("Status", "Entering DriveInches method");
+//            telemetry.addData("speed", speed);
+//            telemetry.addData("leftInches", leftInches);
+//            telemetry.addData("rightInches", rightInches);
+//            telemetry.addData("timeout", timeoutS);
+//            telemetry.update();
+//        }
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
+//        runtime.reset();
+//        while (runtime.seconds() < 5) {
+//            telemetry.addData("left position", left_motor.getCurrentPosition());
+//            telemetry.addData("left inches", leftInches);
+//            telemetry.addData("COUNTS_PER_INCH)", COUNTS_PER_INCH);
+//            telemetry.addData("leftInches * COUNTS_PER_INCH", leftInches * COUNTS_PER_INCH);
+//            telemetry.update();
+//        }
             // Determine new target position, and pass to motor controller
             newLeftTarget = left_motor.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
             newRightTarget = right_motor.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            left_motor.setTargetPosition(newLeftTarget);
-            right_motor.setTargetPosition(newRightTarget);
+
+//        runtime.reset();
+//        while (runtime.seconds() < 3) {
+//            telemetry.addData("calculated newLeftTarget", newLeftTarget );
+//            telemetry.addData("calculated newRightTarget", newRightTarget);
+//            telemetry.update();
+//        }
 
             // Turn On RUN_TO_POSITION
             left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
+            left_motor.setTargetPosition(newLeftTarget);
+            right_motor.setTargetPosition(newRightTarget);
+            // start motion
             left_motor.setPower(speed);
             right_motor.setPower(speed);
-
+            runtime.reset();
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (left_motor.isBusy() && right_motor.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Target", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Status", "Motors at %7d :%7d",
+                telemetry.addData("Target", "Running to %5d , %5d", newLeftTarget, newRightTarget);
+                telemetry.addData("Status", "Motors at %5d , %5d",
                         left_motor.getCurrentPosition(),
                         right_motor.getCurrentPosition());
                 telemetry.update();
@@ -310,6 +395,9 @@ public class SteamMachines_Autonomous extends LinearOpMode {
             right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //  sleep(250);   // optional pause after each move
+
+//            telemetry.addData("Status", "Exiting DriveInches method");
+//            telemetry.update();
         }
     }
 } // end of class (no code beyond this point)

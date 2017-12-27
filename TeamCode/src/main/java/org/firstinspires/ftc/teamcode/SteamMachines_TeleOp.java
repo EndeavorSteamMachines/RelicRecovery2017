@@ -29,12 +29,16 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import static android.os.SystemClock.sleep;
+
 
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
@@ -63,8 +67,8 @@ import com.qualcomm.robotcore.util.Range;
  * <p>
  * Gamepad2 definitions:
  * - left_stick_y (up and down) controls lifter up and down
- * - left trigger (press) opens left_glyph_servo
- * - right trigger (press) opens right_glyph_servo
+ * - X (press) opens  glyph servos
+ * - B (press) closes glyph servos
  **/
 
 @TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
@@ -82,12 +86,18 @@ public class SteamMachines_TeleOp extends OpMode {
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
-    static double GLYPH_SERVO_OPEN = 0.4;
-    static double GLYPH_SERVO_CLOSED = 0.9;
+//    static double GLYPH_SERVO_OPEN = 0.4;
+//    static double GLYPH_SERVO_CLOSED = 0.9;
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
     static double LIFTER_IDLE = 0.01;
-    static double JOYSTICK_DEADZONE = 0.2;
+    static float JOYSTICK_DEADZONE = 0.2f;
+    static double LEFT_SERVO_OPEN = 0.70;
+    static double RIGHT_SERVO_OPEN = 0.30;
+    static double LEFT_SERVO_CLOSED = 0.95;
+    static double RIGHT_SERVO_CLOSED = 0.05;
+    double rightServoPos;
+    double leftServoPos;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -112,6 +122,12 @@ public class SteamMachines_TeleOp extends OpMode {
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
+        lifter_motor.setPower(0);
+
+        // initialize deadzone values for joysticks
+//        gamepad1.setJoystickDeadzone(JOYSTICK_DEADZONE);
+//        gamepad2.setJoystickDeadzone(JOYSTICK_DEADZONE);
+
         // move lifter to down position???
 //        lifter_motor.setTargetPosition(LIFTER_MIN_POS); // or -6000?
 //        runtime.reset();
@@ -125,11 +141,11 @@ public class SteamMachines_TeleOp extends OpMode {
         // servos
         left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
         left_glyph_servo.setDirection(Servo.Direction.FORWARD);
-        left_glyph_servo.setPosition(GLYPH_SERVO_OPEN);
+//        left_glyph_servo.setPosition(LEFT_SERVO_CLOSED);
 
         right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
         right_glyph_servo.setDirection(Servo.Direction.FORWARD);
-        right_glyph_servo.setPosition(GLYPH_SERVO_OPEN);
+//        right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -166,8 +182,6 @@ public class SteamMachines_TeleOp extends OpMode {
         // turn and drive depend on the current position of the joysticks
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-        float leftGlyphPower = gamepad2.left_trigger;
-        float rightGlyphPower = -gamepad2.right_trigger;
 
         // use turn and drive to determine amount of power to apply to motors
         double leftPower = Range.clip(drive + turn, -1.0, 1.0);
@@ -195,6 +209,7 @@ public class SteamMachines_TeleOp extends OpMode {
 //                lifter_motor.setPower(0);
 //        else
 //            lifter_motor.setPower(LIFTER_IDLE);
+
         if (lifterPower < -JOYSTICK_DEADZONE)
             lifter_motor.setPower(lifterPower);
         else if (lifterPower > JOYSTICK_DEADZONE)
@@ -203,20 +218,49 @@ public class SteamMachines_TeleOp extends OpMode {
             lifter_motor.setPower(0);
 
         // ** glyph servo **
-        //    buttons X and B will open or close the grabber
-        left_glyph_servo.setPosition(leftGlyphPower);
-        right_glyph_servo.setPosition(rightGlyphPower);
+        //    buttons X and B will open or close the grabber servos
+        rightServoPos = right_glyph_servo.getPosition();
+        leftServoPos = left_glyph_servo.getPosition();
+
+        if (gamepad2.x) {
+            right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
+            left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
+
+//            rightServoPos = rightServoPos - 0.1;
+//            rightServoPos = Range.clip(rightServoPos, 0, 1);
+//            right_glyph_servo.setPosition(rightServoPos);
+//
+//            leftServoPos = leftServoPos + 0.1;
+//            leftServoPos = Range.clip(leftServoPos, 0, 1);
+//            left_glyph_servo.setPosition(leftServoPos);
+//            sleep(500);//gives driver 1 sec to let go of button
+////            1000 ms = 1 sec : 500 ms = 0.5 (1/2) sec
+
+        } else if (gamepad2.b) {
+            right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
+            left_glyph_servo.setPosition(LEFT_SERVO_CLOSED);
+
+//            rightServoPos = rightServoPos + 0.1;
+//            rightServoPos = Range.clip(rightServoPos, 0, 1);
+//            right_glyph_servo.setPosition(rightServoPos);
+//
+//            leftServoPos = leftServoPos - 0.1;
+//            leftServoPos = Range.clip(leftServoPos, 0, 1);
+//            left_glyph_servo.setPosition(leftServoPos);
+//            sleep(500);//gives driver 1 sec to let go of button
+
+        }
 
         // Telemetry: show elapsed time, wheel power, lifter motor, and servo status
         // This can be whatever we want it to be.  We want info that helps the operators.
-//        telemetry.addData("Status", "Run Time: " + runtime.toString());
-//        telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
-//        telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
-//        telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
-//        telemetry.addData("Lifter Motor Position", "(%.2f)", lifter_motor.getCurrentPosition());
-//        telemetry.addData("Left Glyph Servo Position", "(%.2f)", left_glyph_servo.getPosition());
-//        telemetry.addData("Right Glyph Servo Position", "(%.2f)", right_glyph_servo.getPosition());
-
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
+        telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
+        telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
+        telemetry.addData("Lifter Motor Position", lifter_pos);
+        telemetry.addData("Left Servo Position", "(%.2f)", leftServoPos);
+        telemetry.addData("Right Servo Position", "(%.2f)", rightServoPos);
+        telemetry.update();
     }
 
     /*
