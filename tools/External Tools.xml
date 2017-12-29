@@ -1,0 +1,9 @@
+<toolSet name="External Tools">
+  <tool name="Enable ADB over TCPIP" showInMainMenu="true" showInEditor="true" showInProject="true" showInSearchPopup="true" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="$USER_HOME$/Library/Android/sdk/platform-tools/adb" />
+      <option name="PARAMETERS" value="tcpip 8080" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Documents/FTC/RelicRecovery2017" />
+    </exec>
+  </tool>
+</toolSet>
