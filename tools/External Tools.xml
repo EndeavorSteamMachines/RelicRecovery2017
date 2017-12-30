@@ -24,13 +24,6 @@
     <exec>
       <option name="COMMAND" value="$USER_HOME$/Library/Android/sdk/platform-tools/adb" />
       <option name="PARAMETERS" value="adb -s 192.168.49.1:5555 usb" />
-      <option name="WORKING_DIRECTORY" />
-    </exec>
-  </tool>
-  <tool name="ADB Disconnect" showInMainMenu="true" showInEditor="true" showInProject="true" showInSearchPopup="true" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
-    <exec>
-      <option name="COMMAND" value="$USER_HOME$/Library/Android/sdk/platform-tools/adb" />
-      <option name="PARAMETERS" value="adb disconnect" />
       <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
     </exec>
   </tool>
