@@ -52,6 +52,7 @@ import static android.os.SystemClock.sleep;
  * <p>
  * Servos
  * - left_glyph_servo
+ * - right_glyph_servo
  * <p>
  * Sensors
  * (none configured for TeleOp)
@@ -71,9 +72,9 @@ import static android.os.SystemClock.sleep;
  * - B (press) closes glyph servos
  **/
 
-@TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
 //@Disabled
-public class SteamMachines_TeleOp extends OpMode {
+public class TeleOpmode extends OpMode {
 
     // Constructor: instantiate objects used in this class.
     //  motors
@@ -85,12 +86,10 @@ public class SteamMachines_TeleOp extends OpMode {
     private Servo right_glyph_servo = null;
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
-    //  constants
-//    static double GLYPH_SERVO_OPEN = 0.4;
-//    static double GLYPH_SERVO_CLOSED = 0.9;
-    static int LIFTER_MIN_POS = 100;
-    static int LIFTER_MAX_POS = 6000;
-    static double LIFTER_IDLE = 0.01;
+    //  variables used by all methods in this class
+//    static int LIFTER_MIN_POS = 100;
+//    static int LIFTER_MAX_POS = 6000;
+//    static double LIFTER_IDLE = 0.01;
     static float JOYSTICK_DEADZONE = 0.2f;
     static double LEFT_SERVO_OPEN = 0.70;
     static double RIGHT_SERVO_OPEN = 0.30;
@@ -106,9 +105,9 @@ public class SteamMachines_TeleOp extends OpMode {
     public void init() {
         // let drivers know that initialization has begun
         telemetry.addData("Status", "Initializing");
-
         // Initialize hardware variables
         // NOTE: deviceName must match config file on phone
+        //
         // motors
         left_motor = hardwareMap.get(DcMotor.class, "left_motor");
         left_motor.setDirection(DcMotor.Direction.FORWARD);
@@ -141,11 +140,11 @@ public class SteamMachines_TeleOp extends OpMode {
         // servos
         left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
         left_glyph_servo.setDirection(Servo.Direction.FORWARD);
-//        left_glyph_servo.setPosition(LEFT_SERVO_CLOSED);
+//        left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
 
         right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
         right_glyph_servo.setDirection(Servo.Direction.FORWARD);
-//        right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
+//        right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -196,6 +195,13 @@ public class SteamMachines_TeleOp extends OpMode {
         double lifterPower = Range.clip(lift, -1.0, 1.0);
         int lifter_pos = lifter_motor.getCurrentPosition();
 
+        if (lifterPower < -JOYSTICK_DEADZONE)
+            lifter_motor.setPower(lifterPower);
+        else if (lifterPower > JOYSTICK_DEADZONE)
+            lifter_motor.setPower(lifterPower);
+        else
+            lifter_motor.setPower(0);
+
 //        //set parameters for lifter_motor
 //        if (lifterPower > JOYSTICK_DEADZONE) // joystick positive => up
 //            if (lifter_pos < LIFTER_MAX_POS)
@@ -209,13 +215,6 @@ public class SteamMachines_TeleOp extends OpMode {
 //                lifter_motor.setPower(0);
 //        else
 //            lifter_motor.setPower(LIFTER_IDLE);
-
-        if (lifterPower < -JOYSTICK_DEADZONE)
-            lifter_motor.setPower(lifterPower);
-        else if (lifterPower > JOYSTICK_DEADZONE)
-            lifter_motor.setPower(lifterPower);
-        else
-            lifter_motor.setPower(0);
 
         // ** glyph servo **
         //    buttons X and B will open or close the grabber servos
@@ -234,7 +233,7 @@ public class SteamMachines_TeleOp extends OpMode {
 //            leftServoPos = Range.clip(leftServoPos, 0, 1);
 //            left_glyph_servo.setPosition(leftServoPos);
 //            sleep(500);//gives driver 1 sec to let go of button
-////            1000 ms = 1 sec : 500 ms = 0.5 (1/2) sec
+//  //          1000 ms = 1 sec : 500 ms = 0.5 (1/2) sec
 
         } else if (gamepad2.b) {
             right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
@@ -253,7 +252,8 @@ public class SteamMachines_TeleOp extends OpMode {
 
         // Telemetry: show elapsed time, wheel power, lifter motor, and servo status
         // This can be whatever we want it to be.  We want info that helps the operators.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        //telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Runtime", "(%.2f)", runtime.milliseconds()/1000); // ?? will this work ??
         telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
         telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
         telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);

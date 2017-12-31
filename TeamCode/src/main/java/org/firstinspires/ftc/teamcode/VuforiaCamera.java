@@ -41,7 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * This class is modified from "ConceptVuMarkIdentification".
- * This will be used as a class within SteamMachines_Autonomous.
+ * Initialize phone camera, allow a few seconds to retrieve vuMark.
  */
 public class VuforiaCamera {
 
