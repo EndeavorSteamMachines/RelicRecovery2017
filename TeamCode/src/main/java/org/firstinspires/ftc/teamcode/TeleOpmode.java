@@ -253,7 +253,7 @@ public class TeleOpmode extends OpMode {
         // Telemetry: show elapsed time, wheel power, lifter motor, and servo status
         // This can be whatever we want it to be.  We want info that helps the operators.
         //telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Runtime", "(%.2f)", runtime.milliseconds()/1000); // ?? will this work ??
+        telemetry.addData("Runtime", "(%.2f)", runtime.milliseconds() / 1000); // ?? will this work ??
         telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
         telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
         telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
