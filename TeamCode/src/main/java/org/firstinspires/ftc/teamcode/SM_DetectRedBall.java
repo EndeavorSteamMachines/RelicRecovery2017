@@ -48,7 +48,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * If red > blue, return true, else return false.
  *
  */
-public class DetectRed {
+public class SM_DetectRedBall {
     private ElapsedTime runtime = new ElapsedTime();
     /**
      * The colorSensor field will contain a reference to our color sensor hardware object

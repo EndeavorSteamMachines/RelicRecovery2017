@@ -26,57 +26,25 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-
 /**
- * FTC ENDEAVOR STEAM MACHINE Robot Controller Autonomous Mode
+ * FTC ENDEAVOR STEAM MACHINE Robot Controller Autonomous Mode R1
  * <p>
- * What we control:
- * <p>
- * Motors
- * - left_motor
- * - right_motor
- * - lifter_motor
- * <p>
- * Servos
- * - left_glyph_servo
- * - right_glyph_servo
- * - gem_servoA (autonomous mode only)
- * - gem_servoB (autonomous mode only)
- * <p>
- * Sensors
- * - gem_sensor (autonomous mode only)
- * - camera (autonomous mode only)
- * - imu (autonomous mode only)
- * <p>
- * How we control:
- * <p>
- * - left_motor and right_motor: use RUN_TO_POSITION
- * - all other motors and servos: use constants
- * - color sensor: compare red to blue, return TRUE if red, else FALSE
- * - IMU heading (from the REV Expansion Hub)
+ * Autonomous code for when robot is in starting position R1.
+ * This is the red balancing stone closest to the relic recovery zone.
  **/
+
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "SteamMachines Autonomous Mode", group = "Autonomous")
 //@Disabled
-public class Autonomous_R1 extends LinearOpMode {
+public class SM_Autonomous_R1 extends LinearOpMode {
     // Constructor: instantiate objects used in this class.
-    StartCodes.Position startingPosition = StartCodes.Position.R1;
-    StartCodes.Color startingColor = StartCodes.Color.Red;
+    SM_StartCodes.Position startingPosition = SM_StartCodes.Position.R1;
+    SM_StartCodes.Color startingColor = SM_StartCodes.Color.Red;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot robot = new Robot(hardwareMap, telemetry);
+        SM_Robot robot = new SM_Robot(hardwareMap, telemetry);
 
         robot.Task1();
         robot.Task2(startingColor);

@@ -41,7 +41,7 @@ import static android.os.SystemClock.sleep;
 
 
 /**
- * FTC ENDEAVOR STEAM MACHINE Robot Controller TeleOpMode
+ * FTC ENDEAVOR STEAM MACHINE SM_Robot Controller TeleOpMode
  * <p>
  * What we control:
  * <p>
@@ -74,7 +74,7 @@ import static android.os.SystemClock.sleep;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
 //@Disabled
-public class TeleOpmode extends OpMode {
+public class SM_TeleOp extends OpMode {
 
     // Constructor: instantiate objects used in this class.
     //  motors
