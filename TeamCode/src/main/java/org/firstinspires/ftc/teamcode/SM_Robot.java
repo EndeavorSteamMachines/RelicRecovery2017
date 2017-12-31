@@ -67,8 +67,9 @@ import static java.lang.Thread.sleep;
  * - color sensor: compare red to blue, return TRUE if red, else FALSE
  * - IMU heading (from the REV Expansion Hub)
  **/
-public class Robot {
+public class SM_Robot {
 
+    // hardware map and telemetry
     HardwareMap hardwareMap;
     Telemetry telemetry;
     //  motors
@@ -81,20 +82,25 @@ public class Robot {
     Servo gem_servoA = null;
     Servo gem_servoB = null;
     RelicRecoveryVuMark cryptoKey;
-
     //  timer
     ElapsedTime runtime = new ElapsedTime();
-    //  constants
-    double GLYPH_SERVO_OPEN = 0.4;    // 0.4 * 180 =  72 degrees
-    double GLYPH_SERVO_CLOSED = 0.9;  // 0.9 * 180 = 162 degrees
+    // constants for this class
+    // constants for glyph servos
+    double LEFT_SERVO_OPEN = 0.70;
+    double RIGHT_SERVO_OPEN = 0.30;
+    double LEFT_SERVO_CLOSED = 0.95;
+    double RIGHT_SERVO_CLOSED = 0.05;
+    // constants for lifter
     int LIFTER_MIN_POS = 100;
     int LIFTER_MAX_POS = 6000;
     double LIFTER_IDLE = 0.01;
+    // constants for gem servos
     double GEM_SERVO_A_DOWN = 0.8;
     double GEM_SERVO_A_UP = 0.1;       // starts in up position
     double GEM_SERVO_B_RETRACTED = 0.0; // starts in stowed position
     double GEM_SERVO_B_DEPLOYED = 1.0;
     int GEM_SERVO_DIRECTION = 1;
+    // constants for movement
     double WHEEL_DIAMETER = 3.5; // inches
     double WHEEL_CIRC = WHEEL_DIAMETER * 3.1415;
     double GEAR_RATIO = 56 / 40;
@@ -108,12 +114,10 @@ public class Robot {
     double WHEELBASE = 16; //inches
     double TURN_CIRC = 3.1415 * (WHEELBASE * 2);
     double QUARTER_TURN = (TURN_CIRC - 4) / 4; //inches
-    double LEFT_SERVO_OPEN = 0.70;
-    double RIGHT_SERVO_OPEN = 0.30;
-    double LEFT_SERVO_CLOSED = 0.95;
-    double RIGHT_SERVO_CLOSED = 0.05;
 
-    public Robot(HardwareMap hwMap, Telemetry tm) throws InterruptedException {
+
+    // constructor for this class
+    public SM_Robot(HardwareMap hwMap, Telemetry tm) throws InterruptedException {
         // Initialize hardware variables
         hardwareMap = hwMap;
         telemetry = tm;
@@ -150,70 +154,16 @@ public class Robot {
         gem_servoB.setDirection(Servo.Direction.REVERSE);
         // gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
 
-    }
+    } // end of constructor
 
-//
-//    public void init(Telemetry telemetry, HardwareMap hardwareMap) {
-//
-//        // let drivers know that initialization has begun
-//        telemetry.addData("Status", "Initializing");
-//
-//        // Initialize hardware variables
-//        // NOTE: deviceName must match config file on phone!
-//        // motors
-//        left_motor = hardwareMap.get(DcMotor.class, "left_motor");
-//        left_motor.setDirection(DcMotor.Direction.FORWARD);
-//
-//        right_motor = hardwareMap.get(DcMotor.class, "right_motor");
-//        right_motor.setDirection(DcMotor.Direction.REVERSE);
-//
-//        lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
-//        lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        lifter_motor.setDirection(DcMotor.Direction.REVERSE);
-//        //lifter_motor.setTargetPosition(LIFTER_MIN_POS);
-//        //lifter_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // start with lifter down?
-//        // sleep(1000); // wait 1000ms
-//
-//        // servos
-//        left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
-//        left_glyph_servo.setDirection(Servo.Direction.FORWARD);
-//        left_glyph_servo.setPosition(LEFT_SERVO_CLOSED);
-//
-//        right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
-//        right_glyph_servo.setDirection(Servo.Direction.FORWARD);
-//        right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
-//
-//        gem_servoA = hardwareMap.get(Servo.class, "gem_servoA");
-//        gem_servoA.setDirection(Servo.Direction.FORWARD);
-//        //gem_servoA.setPosition(GEM_SERVO_A_UP);
-//
-//        gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
-//        gem_servoB.setDirection(Servo.Direction.REVERSE);
-//        // gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
-//
-//
-//
-//
-//        // let drivers know that initialization has finished
-//        telemetry.addData("Status", "Initialized");
-//
-//
-//        // timer may be used to limit amount of time for each task
-//        // double timer = runtime.time();
-//        RelicRecoveryVuMark cryptoKey = RelicRecoveryVuMark.CENTER;
-//
-//    }
-
-    //////////////////////////////////////////////////
+    // Task 1: decode crypto-key
     public void Task1() {
 
-        // decode crypto-key
         telemetry.addData("Status", "Task 1 started");
         telemetry.update();
 
         // use vuforia code
-        VuforiaCamera camera = new VuforiaCamera();
+        SM_VuforiaCamera camera = new SM_VuforiaCamera();
         cryptoKey = camera.run(hardwareMap, telemetry, 5);
 
 
@@ -230,11 +180,10 @@ public class Robot {
                 telemetry.update();
             }
         }
-    }
+    } // end of Task1
 
-    public void Task2(StartCodes.Color startingColor) throws InterruptedException {
-
-        // task 2: knock off other-colored gem
+    // task 2: knock off other-colored gem
+    public void Task2(SM_StartCodes.Color startingColor) throws InterruptedException {
 
         telemetry.addData("Status", "Task 2 started");
         telemetry.update();
@@ -244,7 +193,7 @@ public class Robot {
 //            sleep(1000);
 //            gem_servoA.setDirection(Servo.Direction.FORWARD);
 //            gem_servoA.setPosition(GEM_SERVO_A_DOWN);
-        DetectRed gemRed = new DetectRed();
+        SM_DetectRedBall gemRed = new SM_DetectRedBall();
 
         boolean gemRedFlag = gemRed.run(hardwareMap, telemetry);
         if (gemRedFlag) {
@@ -271,16 +220,18 @@ public class Robot {
 //            gem_servoA.setDirection(Servo.Direction.REVERSE);
 //            gem_servoA.setPosition(GEM_SERVO_A_UP);
 //            gem_servoB.setDirection(Servo.Direction.REVERSE);
-//            gem_servoB.setPosition(GEM_SERVO_B_RETRACTED);
-    }
+//            gem_servoB.setPosition(GEM_SERVO_B_RETRACTED)
 
-    public void Task3(StartCodes.Position startPos) {
+    } // end of Task2
+
+    // task 3: drive to position, release glyph and park
+    public void Task3(SM_StartCodes.Position startPos) {
 
 
         telemetry.addData("Status", "Task 3 started");
         telemetry.update();
 
-        if (startPos == StartCodes.Position.B1) {
+        if (startPos == SM_StartCodes.Position.B1) {
             double d_vertical;
 
             switch (cryptoKey) {
@@ -304,18 +255,17 @@ public class Robot {
             //backup 1 inch
             DriveInches(-0.3, 1, 1, 2);
 
-        } else if (startPos == StartCodes.Position.B2) {
+        } else if (startPos == SM_StartCodes.Position.B2) {
             //@TODO drive B2
 
-        } else if (startPos == StartCodes.Position.R1) {
+        } else if (startPos == SM_StartCodes.Position.R1) {
             //@TODO drive R1
 
-
-        } else if (startPos == StartCodes.Position.R2) {
+        } else if (startPos == SM_StartCodes.Position.R2) {
             //@TODO drive R2
 
         }
-    }
+    } // end of Task3
 
 
     // method DriveInches
@@ -325,21 +275,12 @@ public class Robot {
         int newLeftTarget;
         int newRightTarget;
 
-        // Ensure that the opmode is still active
-        // Determine new target position, and pass to motor controller
-        newLeftTarget = left_motor.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-        newRightTarget = right_motor.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-
-//        runtime.reset();
-//        while (runtime.seconds() < 3) {
-//            telemetry.addData("calculated newLeftTarget", newLeftTarget );
-//            telemetry.addData("calculated newRightTarget", newRightTarget);
-//            telemetry.update();
-//        }
-
         // Turn On RUN_TO_POSITION
         left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // set target position
+        newLeftTarget = left_motor.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+        newRightTarget = right_motor.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
         left_motor.setTargetPosition(newLeftTarget);
         right_motor.setTargetPosition(newRightTarget);
         // start motion
@@ -348,20 +289,17 @@ public class Robot {
         runtime.reset();
         while ((runtime.seconds() <= timeoutS) &&
                 (left_motor.isBusy() && right_motor.isBusy())) {
-
             // Display it for the driver.
             telemetry.addData("Target", "Running to %5d , %5d", newLeftTarget, newRightTarget);
             telemetry.addData("Status", "Motors at %5d , %5d", left_motor.getCurrentPosition(), right_motor.getCurrentPosition());
             telemetry.update();
         }
-
         // Stop all motion;
         left_motor.setPower(0);
         right_motor.setPower(0);
-
         // Turn off RUN_TO_POSITION
         left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
+    } // end of DriveInches
 } // end of class (no code beyond this point)
 

@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * This class is modified from "ConceptVuMarkIdentification".
  * Initialize phone camera, allow a few seconds to retrieve vuMark.
  */
-public class VuforiaCamera {
+public class SM_VuforiaCamera {
 
     // Constructor
     public RelicRecoveryVuMark vuMark = null;
@@ -54,7 +54,7 @@ public class VuforiaCamera {
 
     public RelicRecoveryVuMark run(HardwareMap hardwareMap, Telemetry telemetry, double waitTime) {
 
-        telemetry.addData("VuforiaCamera", "have entered method: run");
+        telemetry.addData("SM_VuforiaCamera", "have entered method: run");
         telemetry.update();
         // initialize vuforia
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
