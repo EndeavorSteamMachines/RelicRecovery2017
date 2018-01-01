@@ -72,7 +72,7 @@ import static android.os.SystemClock.sleep;
  * - B (press) closes glyph servos
  **/
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
+@TeleOp(name = "SteamMachines TeleOp Mode", group = "TeleOp")
 //@Disabled
 public class SM_TeleOp extends OpMode {
 

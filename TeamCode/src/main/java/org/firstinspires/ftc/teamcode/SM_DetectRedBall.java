@@ -49,6 +49,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  *
  */
 public class SM_DetectRedBall {
+
     private ElapsedTime runtime = new ElapsedTime();
     /**
      * The colorSensor field will contain a reference to our color sensor hardware object
@@ -63,14 +64,7 @@ public class SM_DetectRedBall {
     String ball = null;
 
     /**
-     * The runOpMode() method is the root of this LinearOpMode, as it is in all linear opModes.
-     * Our implementation here, though is a bit unusual: we've decided to put all the actual work
-     * in the main() method rather than directly in runOpMode() itself. The reason we do that is that
-     * in this sample we're changing the background color of the robot controller screen as the
-     * opmode runs, and we want to be able to *guarantee* that we restore it to something reasonable
-     * and palatable when the opMode ends. The simplest way to do that is to use a try...finally
-     * block around the main, core logic, and an easy way to make that all clear was to separate
-     * the former from the latter in separate methods.
+     * run() method is invoked to sample color.  "True" is returned only when red > blue.
      */
     public boolean run(HardwareMap hardwareMap, Telemetry telemetry) throws InterruptedException {
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
