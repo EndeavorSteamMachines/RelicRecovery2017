@@ -121,6 +121,7 @@ public class SM_DetectRedBall {
             else
                 ball = "Neither";
             telemetry.addData("Detected Ball Color", ball);
+            telemetry.update();
 
             if (Color.red(color) > Color.blue(color))
                 redFlag = true;

@@ -105,6 +105,7 @@ public class SM_TeleOp extends OpMode {
     public void init() {
         // let drivers know that initialization has begun
         telemetry.addData("Status", "Initializing");
+        telemetry.update();
         // Initialize hardware variables
         // NOTE: deviceName must match config file on phone
         //
@@ -141,14 +142,13 @@ public class SM_TeleOp extends OpMode {
         left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
         left_glyph_servo.setDirection(Servo.Direction.FORWARD);
 //        left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
-
         right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
         right_glyph_servo.setDirection(Servo.Direction.FORWARD);
 //        right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
-
+        telemetry.update();
     }
 
     /*
@@ -157,6 +157,7 @@ public class SM_TeleOp extends OpMode {
     @Override
     public void init_loop() {
         telemetry.addData("Status", "INIT has been pressed");
+        telemetry.update();
     }
 
     /*
@@ -166,6 +167,7 @@ public class SM_TeleOp extends OpMode {
     public void start() {
         runtime.reset();
         telemetry.addData("Status", "PLAY has been pressed");
+        telemetry.update();
     }
 
     /*
@@ -249,7 +251,6 @@ public class SM_TeleOp extends OpMode {
 //            sleep(500);//gives driver 1 sec to let go of button
 
         }
-
         // Telemetry: show elapsed time, wheel power, lifter motor, and servo status
         // This can be whatever we want it to be.  We want info that helps the operators.
         //telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -269,6 +270,7 @@ public class SM_TeleOp extends OpMode {
     @Override
     public void stop() {
         telemetry.addData("Status", "STOP has been pressed");
+        telemetry.update();
     }
 
 }

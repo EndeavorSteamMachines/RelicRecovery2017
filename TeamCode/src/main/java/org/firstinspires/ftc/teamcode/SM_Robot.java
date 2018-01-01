@@ -81,7 +81,6 @@ public class SM_Robot {
     Servo right_glyph_servo = null;
     Servo gem_servoA = null;
     Servo gem_servoB = null;
-    RelicRecoveryVuMark cryptoKey;
     //  timer
     ElapsedTime runtime = new ElapsedTime();
     // constants for this class
@@ -114,7 +113,6 @@ public class SM_Robot {
     double WHEELBASE = 16; //inches
     double TURN_CIRC = 3.1415 * (WHEELBASE * 2);
     double QUARTER_TURN = (TURN_CIRC - 4) / 4; //inches
-
 
     // constructor for this class
     public SM_Robot(HardwareMap hwMap, Telemetry tm) throws InterruptedException {
@@ -157,7 +155,8 @@ public class SM_Robot {
     } // end of constructor
 
     // Task 1: decode crypto-key
-    public void Task1() {
+    public RelicRecoveryVuMark Task1() {
+        RelicRecoveryVuMark cryptoKey;
 
         telemetry.addData("Status", "Task 1 started");
         telemetry.update();
@@ -166,20 +165,18 @@ public class SM_Robot {
         SM_VuforiaCamera camera = new SM_VuforiaCamera();
         cryptoKey = camera.run(hardwareMap, telemetry, 5);
 
-
         // display result
         runtime.reset();
-        while (runtime.seconds() < 5) {
+        while (runtime.seconds() < 3) {
             if (cryptoKey != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("VuMark", "%s visible", cryptoKey.toString());
+                telemetry.addData("VuMark", "%s identified!", cryptoKey.toString());
                 telemetry.update();
             } else {
-                telemetry.addData("Status", "Run Time: " + runtime.toString());
                 telemetry.addData("VuMark", "not visible");
                 telemetry.update();
             }
         }
+        return cryptoKey;
     } // end of Task1
 
     // task 2: knock off other-colored gem
@@ -225,15 +222,15 @@ public class SM_Robot {
     } // end of Task2
 
     // task 3: drive to position, release glyph and park
-    public void Task3(SM_StartCodes.Position startPos) {
+    public void Task3(SM_StartCodes.Position startPos, RelicRecoveryVuMark cryptoKey) {
 
 
         telemetry.addData("Status", "Task 3 started");
         telemetry.update();
 
         if (startPos == SM_StartCodes.Position.B1) {
-            double d_vertical;
 
+            double d_vertical;
             switch (cryptoKey) {
                 case LEFT:
                     d_vertical = D_LEFT;
@@ -241,7 +238,6 @@ public class SM_Robot {
                     d_vertical = D_RIGHT;
                 default:
                     d_vertical = D_CENTER;
-
             }
 
             //movement from B1 to align in front of crypt
@@ -269,15 +265,14 @@ public class SM_Robot {
 
 
     // method DriveInches
-    public void DriveInches(double speed,
-                            double leftInches, double rightInches,
-                            double timeoutS) {
+    public void DriveInches(double speed, double leftInches, double rightInches, double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
 
         // Turn On RUN_TO_POSITION
         left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // set target position
         newLeftTarget = left_motor.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
         newRightTarget = right_motor.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
@@ -289,17 +284,19 @@ public class SM_Robot {
         runtime.reset();
         while ((runtime.seconds() <= timeoutS) &&
                 (left_motor.isBusy() && right_motor.isBusy())) {
-            // Display it for the driver.
+            // Display motor status
             telemetry.addData("Target", "Running to %5d , %5d", newLeftTarget, newRightTarget);
             telemetry.addData("Status", "Motors at %5d , %5d", left_motor.getCurrentPosition(), right_motor.getCurrentPosition());
             telemetry.update();
         }
+
         // Stop all motion;
         left_motor.setPower(0);
         right_motor.setPower(0);
         // Turn off RUN_TO_POSITION
         left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     } // end of DriveInches
 } // end of class (no code beyond this point)
 

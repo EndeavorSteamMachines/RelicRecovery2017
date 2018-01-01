@@ -27,7 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 /**
  * FTC ENDEAVOR STEAM MACHINE Robot Controller Autonomous Mode R1
  * <p>
@@ -35,7 +39,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * This is the red balancing stone closest to the relic recovery zone.
  **/
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "SteamMachines Autonomous Mode", group = "Autonomous")
+@Autonomous(name = "Autonomous R1", group = "Autonomous")
 //@Disabled
 public class SM_Autonomous_R1 extends LinearOpMode {
     // Constructor: instantiate objects used in this class.
@@ -44,11 +48,26 @@ public class SM_Autonomous_R1 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SM_Robot robot = new SM_Robot(hardwareMap, telemetry);
 
-        robot.Task1();
-        robot.Task2(startingColor);
-        robot.Task3(startingPosition);
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        telemetry.addData("Status", "PLAY has been pressed");
+        telemetry.update();
+        // another option for waiting?
+//        while (!(isStarted() || isStopRequested())) {
+//            telemetry.addData("Status", "Waiting for start");
+//            telemetry.update();
+//            idle();
+//        }
+
+        SM_Robot robot = new SM_Robot(hardwareMap, telemetry);
+        RelicRecoveryVuMark cryptoKey;
+
+        cryptoKey = robot.Task1();
+//        robot.Task2(startingColor);
+        robot.Task3(startingPosition, cryptoKey);
 
     }
+
+
 } // end of class (no code beyond this point)
