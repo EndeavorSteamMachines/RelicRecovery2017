@@ -241,15 +241,15 @@ public class SM_Robot {
             }
 
             //movement from B1 to align in front of crypt
-            DriveInches(0.9, d_vertical, d_vertical, 10);
+            DriveStraight(0.9, d_vertical, d_vertical, 10);
             //turn to face crypt
-            DriveInches(0.4, 0, QUARTER_TURN, 3);
+            DriveStraight(0.4, 0, QUARTER_TURN, 3);
             //drive to crypt
-            DriveInches(0.6, D_HORIZONTAL, D_HORIZONTAL, 3);
+            DriveStraight(0.6, D_HORIZONTAL, D_HORIZONTAL, 3);
             //drop glyph
 //            glyph_servo.setPosition(GLYPH_SERVO_OPEN);
             //backup 1 inch
-            DriveInches(-0.3, 1, 1, 2);
+            DriveStraight(-0.3, 1, 1, 2);
 
         } else if (startPos == SM_StartCodes.Position.B2) {
             //@TODO drive B2
@@ -264,8 +264,8 @@ public class SM_Robot {
     } // end of Task3
 
 
-    // method DriveInches
-    public void DriveInches(double speed, double leftInches, double rightInches, double timeoutS) {
+    // method DriveStraight
+    public void DriveStraight(double speed, double leftInches, double rightInches, double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
 
@@ -297,6 +297,39 @@ public class SM_Robot {
         left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-    } // end of DriveInches
-} // end of class (no code beyond this point)
+    } // end of DriveStraight
 
+    public void TurnIMU(double speed, double leftInches, double rightInches, double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Turn On RUN_TO_POSITION
+        left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // set target position
+        newLeftTarget = left_motor.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+        newRightTarget = right_motor.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+        left_motor.setTargetPosition(newLeftTarget);
+        right_motor.setTargetPosition(newRightTarget);
+        // start motion
+        left_motor.setPower(speed);
+        right_motor.setPower(speed);
+        runtime.reset();
+        while ((runtime.seconds() <= timeoutS) &&
+                (left_motor.isBusy() && right_motor.isBusy())) {
+            // Display motor status
+            telemetry.addData("Target", "Running to %5d , %5d", newLeftTarget, newRightTarget);
+            telemetry.addData("Status", "Motors at %5d , %5d", left_motor.getCurrentPosition(), right_motor.getCurrentPosition());
+            telemetry.update();
+        }
+
+        // Stop all motion;
+        left_motor.setPower(0);
+        right_motor.setPower(0);
+        // Turn off RUN_TO_POSITION
+        left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    }
+} // end of class (no code beyond this point)
