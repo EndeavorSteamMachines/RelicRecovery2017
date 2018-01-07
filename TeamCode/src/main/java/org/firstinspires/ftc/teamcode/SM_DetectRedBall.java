@@ -33,9 +33,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -45,17 +42,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
- * This is an example LinearOpMode that shows how to use a color sensor in a generic
- * way, insensitive which particular make or model of color sensor is used. The opmode
- * assumes that the color sensor is configured with a name of "color sensor".
+ * This class is modified from the "SensorColor" OpMode.
  *
- * If the color sensor has a light which is controllable, you can use the X button on
- * the gamepad to toggle the light on and off.
+ * Turn on sensor light, read the sensor, compare the result of red and blue.
+ * If red > blue, return true, else return false.
  *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-public class DetectRed {
+public class SM_DetectRedBall {
+
     private ElapsedTime runtime = new ElapsedTime();
     /**
      * The colorSensor field will contain a reference to our color sensor hardware object
@@ -70,14 +64,7 @@ public class DetectRed {
     String ball = null;
 
     /**
-     * The runOpMode() method is the root of this LinearOpMode, as it is in all linear opModes.
-     * Our implementation here, though is a bit unusual: we've decided to put all the actual work
-     * in the main() method rather than directly in runOpMode() itself. The reason we do that is that
-     * in this sample we're changing the background color of the robot controller screen as the
-     * opmode runs, and we want to be able to *guarantee* that we restore it to something reasonable
-     * and palatable when the opMode ends. The simplest way to do that is to use a try...finally
-     * block around the main, core logic, and an easy way to make that all clear was to separate
-     * the former from the latter in separate methods.
+     * run() method is invoked to sample color.  "True" is returned only when red > blue.
      */
     public boolean run(HardwareMap hardwareMap, Telemetry telemetry) throws InterruptedException {
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
@@ -89,7 +76,6 @@ public class DetectRed {
         } finally {
 
         }
-
         return redFlag;
     }
 
@@ -99,6 +85,7 @@ public class DetectRed {
         boolean redFlag = false;
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
 
+        // turn on light
         if (colorSensor instanceof SwitchableLight) {
             ((SwitchableLight) colorSensor).enableLight(true);
         }
@@ -111,7 +98,6 @@ public class DetectRed {
                 light.enableLight(!light.isLightOn());
             }
 
-
             // Read the sensor
             NormalizedRGBA colors = colorSensor.getNormalizedColors();
 
@@ -121,6 +107,7 @@ public class DetectRed {
                     .addData("r", "%02x", Color.red(color))
                     .addData("g", "%02x", Color.green(color))
                     .addData("b", "%02x", Color.blue(color));
+
             if (Color.red(color) > Color.blue(color))
                 ball = "Red";
             else if (Color.blue(color) > Color.red(color))
@@ -128,10 +115,15 @@ public class DetectRed {
             else
                 ball = "Neither";
             telemetry.addData("Detected Ball Color", ball);
+            telemetry.update();
 
             if (Color.red(color) > Color.blue(color))
                 redFlag = true;
 
+        }
+        // turn off light
+        if (colorSensor instanceof SwitchableLight) {
+            ((SwitchableLight) colorSensor).enableLight(false);
         }
         return redFlag;
     }
