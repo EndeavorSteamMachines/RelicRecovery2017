@@ -41,9 +41,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * This class is modified from "ConceptVuMarkIdentification".
- * This will be used as a class within SteamMachines_Autonomous.
+ *
+ * Initialize phone camera, allow a few seconds to retrieve vuMark.
  */
-public class VuforiaCamera {
+public class SM_VuforiaCamera {
 
     // Constructor
     public RelicRecoveryVuMark vuMark = null;
@@ -58,7 +59,9 @@ public class VuforiaCamera {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         //Set license key to use Vuforia. License key obtained from:  https://developer.vuforia.com/license-manager
-        parameters.vuforiaLicenseKey = "AY3ovAD/////AAAAGQXI9N445U53kBfK81NQP/pQpUnLvJUPXH2JmcHCVjr7wvMtXNGkpxGLrknlRCmgQofpRFzSm0vc3DDmsOYR4DRgSpDQlm1KDGZnbUWCWZP87rA5aeKCmsOFYn98cDxxUGtjRhXQBmID47FDBLo5+YG+eaWbUJCqyfheOY3rjlLitL2IN70O3wUijWnXUNCXCtPXON9iBltMmAwAf8vjTSKBK0XE+C69c08zY9pdFSRDvciQ83zDD/gFd8OYwyUXYArXeS5LPilNiUiibIC4X/t0t5nTdiA7q9R2qjUcd4Sbm6T5vSJH5O9TXSWh2sroqTBEtqtFtP0MPRjP9HfYiFjtbHHQlt5beQdOUvCvPj/b";
+        parameters.vuforiaLicenseKey = "AY3ovAD/////AAAAGQXI9N445U53kBfK81NQP/pQpUnLvJUPXH2JmcHCVjr7wvMtXNGkpxGLrknlRCmgQofpRFzSm0vc3DDmsOYR4DRgSpDQlm1KDGZnbUWCWZP87r" +
+                "A5aeKCmsOFYn98cDxxUGtjRhXQBmID47FDBLo5+YG+eaWbUJCqyfheOY3rjlLitL2IN70O3wUijWnXUNCXCtPXON9iBltMmAwAf8vjTSKBK0XE+C69c08zY9pdFSRDvciQ83zDD/gFd8OYwyUXYAr" +
+                "XeS5LPilNiUiibIC4X/t0t5nTdiA7q9R2qjUcd4Sbm6T5vSJH5O9TXSWh2sroqTBEtqtFtP0MPRjP9HfYiFjtbHHQlt5beQdOUvCvPj/b";
         // Choose camera on back of phone.
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         vuforia = ClassFactory.createVuforiaLocalizer(parameters);
@@ -83,6 +86,7 @@ public class VuforiaCamera {
         // wait until either VuMark is identified or waitTime is exceeded
         while (vuMark == RelicRecoveryVuMark.UNKNOWN && runtime.seconds() < waitTime) {
             telemetry.addData("VuMark", "trying to identify");
+            telemetry.update();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
         relicTrackables.deactivate();

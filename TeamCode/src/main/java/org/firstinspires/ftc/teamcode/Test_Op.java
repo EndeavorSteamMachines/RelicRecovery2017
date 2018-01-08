@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.hardware.Sensor;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,7 +41,7 @@ import com.qualcomm.robotcore.util.Range;
 //import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
 
 /**
- * FTC ENDEAVOR STEAM MACHINE Robot Controller Test_Op Mode
+ * FTC ENDEAVOR STEAM MACHINE SM_Robot Controller Test_Op Mode
  * <p>
  * What we control:
  * <p>
@@ -80,7 +81,7 @@ import com.qualcomm.robotcore.util.Range;
  **/
 
 @TeleOp(name = "Testing OpMode", group = "TeleOp")
-//@Disabled
+@Disabled
 public class Test_Op extends OpMode {
 
     // Constructor: instantiate objects used in this class
@@ -210,18 +211,18 @@ public class Test_Op extends OpMode {
             gem_servoB.setPosition(GEM_SERVO_B_OPEN);
         else if (gamepad2.dpad_left)
             gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
-        else if(gamepad2.dpad_right)
+        else if (gamepad2.dpad_right)
             gem_servoB.setPosition(GEM_SERVO_B_KNOCK_OUT);
 
 
         // Telemetry: show elapsed time, wheel power, lifter motor, servos, and possibly sensors
         // This can be whatever we want it to be.  We want info that helps the operators.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Drive Motors","left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Lifter Motor Power","(%.2f)", lifterPower);
-        telemetry.addData("Lifter Motor Position","(%.2f)", lifter_motor.getCurrentPosition());
-        telemetry.addData("Glyph Servo Position","(%.2f)", glyph_servo.getPosition());
-        telemetry.addData("Gem Servos Position","gem_servoA: (%.2f), gem_servoB: (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
+        telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
+        telemetry.addData("Lifter Motor Position", "(%.2f)", lifter_motor.getCurrentPosition());
+        telemetry.addData("Glyph Servo Position", "(%.2f)", glyph_servo.getPosition());
+        telemetry.addData("Gem Servos Position", "gem_servoA: (%.2f), gem_servoB: (%.2f)", gem_servoA.getPosition(), gem_servoB.getPosition());
 //        telemetry.addData("IMU", IMU);
     }
 
