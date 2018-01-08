@@ -156,6 +156,9 @@ public class SM_Robot {
 
     // Task 1: decode crypto-key
     public RelicRecoveryVuMark Task1() {
+        right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
+        left_glyph_servo.setPosition(LEFT_SERVO_CLOSED);
+        
         RelicRecoveryVuMark cryptoKey;
 
         telemetry.addData("Status", "Task 1 started");
@@ -247,8 +250,8 @@ public class SM_Robot {
             //drive to crypt
             DriveStraight(0.6, D_HORIZONTAL, D_HORIZONTAL, 3);
             //drop glyph
-//            glyph_servo.setPosition(GLYPH_SERVO_OPEN);
-            //backup 1 inch
+            right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
+            left_glyph_servo.setPosition(LEFT_SERVO_OPEN);            //backup 1 inch
             DriveStraight(-0.3, 1, 1, 2);
 
         } else if (startPos == SM_StartCodes.Position.B2) {
