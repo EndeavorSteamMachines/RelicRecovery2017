@@ -82,10 +82,10 @@ public class SteamMachines_TeleOp extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     //  constants
     static double GLYPH_SERVO_OPEN = 0.4;
-    static double GLYPH_SERVO_CLOSED = 0.9;
+    static double GLYPH_SERVO_CLOSED = 0.98;
     static int LIFTER_MIN_POS = 100;
     static int LIFTER_MAX_POS = 6000;
-    static double LIFTER_IDLE = 0.01;
+    static double LIFTER_ZERO = 0.00;
     static double JOYSTICK_DEADZONE = 0.2;
 
     /*
@@ -111,6 +111,8 @@ public class SteamMachines_TeleOp extends OpMode {
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
+        lifter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // move lifter to down position???
 //        lifter_motor.setTargetPosition(LIFTER_MIN_POS); // or -6000?
 //        runtime.reset();
@@ -181,14 +183,14 @@ public class SteamMachines_TeleOp extends OpMode {
             if (lifter_pos < LIFTER_MAX_POS)
                 lifter_motor.setPower(lifterPower);
             else
-                lifter_motor.setPower(LIFTER_IDLE);
+                lifter_motor.setPower(LIFTER_ZERO);
         else if (lifterPower < -JOYSTICK_DEADZONE) //joystick negative => down
             if (lifter_pos > LIFTER_MIN_POS)
                 lifter_motor.setPower(lifterPower);
             else
-                lifter_motor.setPower(0);
+                lifter_motor.setPower(LIFTER_ZERO);
         else
-            lifter_motor.setPower(LIFTER_IDLE);
+            lifter_motor.setPower(LIFTER_ZERO);
 
         // ** glyph servo **
         //    buttons X and B will open or close the grabber
