@@ -112,7 +112,7 @@ public class SM_Robot {
     double D_HORIZONTAL = 24 - (9 + 4); //distance to wall - (half of robot + 2/3 of glyph)
     double WHEELBASE = 16; //inches
     double TURN_CIRC = 3.1415 * (WHEELBASE * 2);
-    double QUARTER_TURN = (TURN_CIRC - 4) / 4; //inches
+    double QUARTER_TURN = (TURN_CIRC) / 4; //inches
 
     // constructor for this class
     public SM_Robot(HardwareMap hwMap, Telemetry tm) throws InterruptedException {

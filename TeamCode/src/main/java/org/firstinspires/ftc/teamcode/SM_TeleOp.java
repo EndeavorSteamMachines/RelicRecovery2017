@@ -95,6 +95,7 @@ public class SM_TeleOp extends OpMode {
     static double RIGHT_SERVO_OPEN = 0.30;
     static double LEFT_SERVO_CLOSED = 0.95;
     static double RIGHT_SERVO_CLOSED = 0.05;
+    boolean foreward = true;
     double rightServoPos;
     double leftServoPos;
 
@@ -203,6 +204,20 @@ public class SM_TeleOp extends OpMode {
             lifter_motor.setPower(lifterPower);
         else
             lifter_motor.setPower(0);
+
+        if (gamepad1.right_bumper) {
+            foreward = !foreward;
+
+            if (foreward) {
+                left_motor.setDirection(DcMotor.Direction.FORWARD);
+                right_motor.setDirection(DcMotor.Direction.FORWARD);
+            } else if (!foreward) {
+                left_motor.setDirection(DcMotor.Direction.REVERSE);
+                right_motor.setDirection(DcMotor.Direction.REVERSE);
+            }
+            sleep(300);
+        }
+
 
 //        //set parameters for lifter_motor
 //        if (lifterPower > JOYSTICK_DEADZONE) // joystick positive => up
