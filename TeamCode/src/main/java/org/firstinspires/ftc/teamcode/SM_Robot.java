@@ -93,7 +93,7 @@ public class SM_Robot {
     int LIFTER_POS_RAISE_GLYPH = 1000;
     // constants for gem servos
     double GEM_SERVO_A_DOWN = 0.8;
-    double GEM_SERVO_A_UP = 0.1;       // starts in up position
+    double GEM_SERVO_A_UP = 0.1;        // starts in up position
     double GEM_SERVO_B_RETRACTED = 0.0; // starts in stowed position
     double GEM_SERVO_B_DEPLOYED = 1.0;
     int GEM_SERVO_DIRECTION = 1;
@@ -107,10 +107,10 @@ public class SM_Robot {
     double D_CENTER = 36; // distance from center of pad to center of CENTER crypt
     double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     double D_LEFT = D_CENTER + CRYPT_WIDTH;
-    double D_HORIZONTAL = 24 - (9 + 4); //distance to wall - (half of robot + 2/3 of glyph)
-    double WHEELBASE = 16; //inches
-    double TURN_CIRC = 3.1415 * (WHEELBASE * 2);
-    double QUARTER_TURN = (TURN_CIRC) / 4; //inches
+    double D_HORIZONTAL = 24 - (9 + 4); //inches, distance to wall - (half of robot + 2/3 of glyph)
+    double WHEELBASE = 16; //inches, from wheel to wheel
+    double TURN_CIRC = 3.1415 * (WHEELBASE); // inches, circumference = pi * diameter
+    double QUARTER_TURN = (TURN_CIRC) / 4; //inches, 1/4 of circumference
 
     // constructor for this class
     public SM_Robot(HardwareMap hwMap, Telemetry tm) throws InterruptedException {
@@ -120,18 +120,23 @@ public class SM_Robot {
         // NOTE: deviceName must match config file on phone!
         // motors
         left_motor = hardwareMap.get(DcMotor.class, "left_motor");
+        left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_motor.setDirection(DcMotor.Direction.FORWARD);
+        left_motor.setPower(0);
 
         right_motor = hardwareMap.get(DcMotor.class, "right_motor");
+        right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         right_motor.setDirection(DcMotor.Direction.REVERSE);
+        right_motor.setPower(0);
 
         lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lifter_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
         lifter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //lifter_motor.setTargetPosition(LIFTER_MIN_POS);
-        //lifter_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // start with lifter down?
+        lifter_motor.setPower(0);
 
         // servos
         left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
@@ -144,10 +149,8 @@ public class SM_Robot {
 
         gem_servoA = hardwareMap.get(Servo.class, "gem_servoA");
         gem_servoA.setDirection(Servo.Direction.FORWARD);
-        // gem_servoA.setPosition(GEM_SERVO_A_UP);
         gem_servoB = hardwareMap.get(Servo.class, "gem_servoB");
         gem_servoB.setDirection(Servo.Direction.REVERSE);
-        // gem_servoB.setPosition(GEM_SERVO_B_FOLDED);
 
     } // end of constructor
 
@@ -162,19 +165,21 @@ public class SM_Robot {
         SM_VuforiaCamera camera = new SM_VuforiaCamera();
         cryptoKey = camera.run(hardwareMap, telemetry, 5);
 
-        // display result
-        runtime.reset();
-        while (runtime.seconds() < 3) {
-            if (cryptoKey != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("VuMark", "%s identified!", cryptoKey.toString());
-                telemetry.update();
-            } else {
-                telemetry.addData("VuMark", "not visible");
-                telemetry.update();
-            }
-        }
+        // display result (testing only)
+//        runtime.reset();
+//        while (runtime.seconds() < 3) {
+//            if (cryptoKey != RelicRecoveryVuMark.UNKNOWN) {
+//                telemetry.addData("VuMark", "%s identified!", cryptoKey.toString());
+//                telemetry.update();
+//            } else {
+//                telemetry.addData("VuMark", "not visible");
+//                telemetry.update();
+//            }
+//        }
+
         telemetry.addData("Status", "Task 1 complete");
         telemetry.update();
+
         return cryptoKey;
     } // end of Task1
 
@@ -219,6 +224,10 @@ public class SM_Robot {
 //            gem_servoB.setDirection(Servo.Direction.REVERSE);
 //            gem_servoB.setPosition(GEM_SERVO_B_RETRACTED)
 
+
+        telemetry.addData("Status", "Task 2 complete");
+        telemetry.update();
+
     } // end of Task2
 
     // task 3: drive to position, release glyph and park
@@ -228,8 +237,20 @@ public class SM_Robot {
         telemetry.addData("Status", "Task 3 started");
         telemetry.update();
 
+        //lift glyph
+        lifter_motor.setTargetPosition(1000); // need to verify by testing
+        lifter_motor.setPower(0.4);
+        runtime.reset();
+        while (lifter_motor.isBusy() && runtime.seconds() < 2) {
+            telemetry.addData("Status", "lifting glyph");
+        }
+        lifter_motor.setPower(0);
+
+        // robot will start in 1 of 4 positions: B1, B2, R1, R2
         if (startPos == SM_StartCodes.Position.B1) {
 
+            // set vertical distance to travel from center of balancing stone
+            // to center of selected crypto column
             double d_vertical;
             switch (cryptoKey) {
                 case LEFT:
@@ -239,29 +260,13 @@ public class SM_Robot {
                 default:
                     d_vertical = D_CENTER;
             }
-
-            //lift glyph
-            lifter_motor.setTargetPosition(1000);
-            runtime.reset();
-            lifter_motor.setPower(0.4);
-            while (lifter_motor.isBusy() && runtime.seconds() < 3) {
-                telemetry.addData("Status", "lifting glyph");
-            }
-            lifter_motor.setPower(0);
-
             //movement from B1 to align in front of crypt
-            DriveStraight(0.9, d_vertical, d_vertical, 8);
+            DriveStraight(0.6, d_vertical, d_vertical, 8);
             //turn to face crypt
-            DriveStraight(0.3, -QUARTER_TURN, QUARTER_TURN, 3);
+            DriveStraight(0.3, -QUARTER_TURN, QUARTER_TURN, 4);
             //drive to crypt
-            DriveStraight(0.4, D_HORIZONTAL, D_HORIZONTAL, 3);
+            DriveStraight(0.4, D_HORIZONTAL, D_HORIZONTAL, 4);
 
-            //drop glyph
-            right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
-            left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
-
-            //backup 1 inch
-            DriveStraight(-0.3, 1, 1, 2);
 
         } else if (startPos == SM_StartCodes.Position.B2) {
             //@TODO drive B2
@@ -274,6 +279,13 @@ public class SM_Robot {
 
         }
 
+        //drop glyph
+        right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
+        left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
+
+        //backup 1 inch
+        DriveStraight(-0.3, 1, 1, 2);
+
         telemetry.addData("Status", "Task 3 complete");
         telemetry.update();
     } // end of Task3
@@ -284,15 +296,12 @@ public class SM_Robot {
         int newLeftTarget;
         int newRightTarget;
 
-        // Turn On RUN_TO_POSITION
-        left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         // set target position
         newLeftTarget = left_motor.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
         newRightTarget = right_motor.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
         left_motor.setTargetPosition(newLeftTarget);
         right_motor.setTargetPosition(newRightTarget);
+
         // start motion
         left_motor.setPower(speed);
         right_motor.setPower(speed);
@@ -300,17 +309,15 @@ public class SM_Robot {
         while ((runtime.seconds() <= timeoutS) &&
                 (left_motor.isBusy() && right_motor.isBusy())) {
             // Display motor status
-            telemetry.addData("Target for motors:",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-            telemetry.addData("Status of motors:", "%7d:%7d", left_motor.getCurrentPosition(), right_motor.getCurrentPosition());
+            telemetry.addData("Motor target position:",  "%7d:%7d", newLeftTarget, newRightTarget);
+            telemetry.addData("Motor current position:", "%7d:%7d", left_motor.getCurrentPosition(), right_motor.getCurrentPosition());
             telemetry.update();
         }
 
         // Stop all motion;
         left_motor.setPower(0);
         right_motor.setPower(0);
-        // Turn off RUN_TO_POSITION
-        left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
     } // end of DriveStraight
 

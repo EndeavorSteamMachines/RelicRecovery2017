@@ -85,7 +85,7 @@ public class SM_TeleOp extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //  constants used by all methods in this class
-    static float JOYSTICK_DEADZONE = 0.2f;
+    static double JOYSTICK_DEADZONE = 0.2;
     static double LEFT_SERVO_OPEN = 0.70;
     static double RIGHT_SERVO_OPEN = 0.30;
     static double LEFT_SERVO_CLOSED = 0.95;
@@ -104,14 +104,19 @@ public class SM_TeleOp extends OpMode {
         //
         // motors
         left_motor = hardwareMap.get(DcMotor.class, "left_motor");
+        left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         left_motor.setDirection(DcMotor.Direction.FORWARD);
+        left_motor.setPower(0);
 
         right_motor = hardwareMap.get(DcMotor.class, "right_motor");
+        right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         right_motor.setDirection(DcMotor.Direction.REVERSE);
+        right_motor.setPower(0);
 
         lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
+        lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
         lifter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -121,6 +126,7 @@ public class SM_TeleOp extends OpMode {
         left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
         left_glyph_servo.setDirection(Servo.Direction.FORWARD);
         left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
+
         right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
         right_glyph_servo.setDirection(Servo.Direction.FORWARD);
         right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
@@ -216,7 +222,7 @@ public class SM_TeleOp extends OpMode {
         // Telemetry: show elapsed time, wheel power, lifter motor, and servo status
         // This can be whatever we want it to be.  We want info that helps the operators.
         //telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Runtime", "(%.2f)", runtime.milliseconds() / 1000); // ?? will this work ??
+        telemetry.addData("Runtime", "(%.2f)", runtime.milliseconds() / 1000);
         telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
         telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
         telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
