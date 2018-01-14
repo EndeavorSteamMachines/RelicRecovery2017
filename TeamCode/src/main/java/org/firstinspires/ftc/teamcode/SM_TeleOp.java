@@ -86,10 +86,11 @@ public class SM_TeleOp extends OpMode {
 
     //  constants used by all methods in this class
     static double JOYSTICK_DEADZONE = 0.2;
-    static double LEFT_SERVO_OPEN = 0.70;
-    static double RIGHT_SERVO_OPEN = 0.30;
-    static double LEFT_SERVO_CLOSED = 0.95;
-    static double RIGHT_SERVO_CLOSED = 0.05;
+
+    static double RIGHT_SERVO_OPEN = 0.20;
+    static double RIGHT_SERVO_CLOSED = 0.00;
+    static double LEFT_SERVO_OPEN = 0.8;
+    static double LEFT_SERVO_CLOSED = 0.6;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -124,12 +125,12 @@ public class SM_TeleOp extends OpMode {
 
         // servos
         left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
-        left_glyph_servo.setDirection(Servo.Direction.FORWARD);
-        left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
+        left_glyph_servo.setDirection(Servo.Direction.REVERSE);
+//        left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
 
         right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
         right_glyph_servo.setDirection(Servo.Direction.FORWARD);
-        right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
+//        right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -226,6 +227,8 @@ public class SM_TeleOp extends OpMode {
         telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
         telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
         telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
+
+
         telemetry.addData("Left Servo Position", "(%.2f)", left_glyph_servo.getPosition());
         telemetry.addData("Right Servo Position", "(%.2f)", right_glyph_servo.getPosition());
         telemetry.update();
