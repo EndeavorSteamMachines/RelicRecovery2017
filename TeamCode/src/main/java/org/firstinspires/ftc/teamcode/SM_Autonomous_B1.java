@@ -53,6 +53,7 @@ public class SM_Autonomous_B1 extends LinearOpMode {
         waitForStart();
         telemetry.addData("Status", "PLAY has been pressed");
         telemetry.update();
+
         // another option for waiting?
 //        while (!(isStarted() || isStopRequested())) {
 //            telemetry.addData("Status", "Waiting for start");

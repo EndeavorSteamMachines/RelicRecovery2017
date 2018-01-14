@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -40,7 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  **/
 
 @Autonomous(name = "Autonomous R1", group = "Autonomous")
-//@Disabled
+@Disabled
 public class SM_Autonomous_R1 extends LinearOpMode {
     // Constructor: instantiate objects used in this class.
     SM_StartCodes.Position startingPosition = SM_StartCodes.Position.R1;
