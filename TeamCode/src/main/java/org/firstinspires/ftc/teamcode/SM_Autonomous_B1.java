@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -40,7 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  **/
 
 @Autonomous(name = "Autonomous B1", group = "Autonomous")
-//@Disabled
+@Disabled
 public class SM_Autonomous_B1 extends LinearOpMode {
     // Constructor: instantiate objects used in this class.
     SM_StartCodes.Position startingPosition = SM_StartCodes.Position.B1;
@@ -53,6 +54,7 @@ public class SM_Autonomous_B1 extends LinearOpMode {
         waitForStart();
         telemetry.addData("Status", "PLAY has been pressed");
         telemetry.update();
+
         // another option for waiting?
 //        while (!(isStarted() || isStopRequested())) {
 //            telemetry.addData("Status", "Waiting for start");
@@ -64,10 +66,9 @@ public class SM_Autonomous_B1 extends LinearOpMode {
         RelicRecoveryVuMark cryptoKey;
 
         cryptoKey = robot.Task1();
-//        robot.Task2(startingColor);
+//        robot.Task2(startingColor);  // need HW!
         robot.Task3(startingPosition, cryptoKey);
 
     }
-
 
 } // end of class (no code beyond this point)

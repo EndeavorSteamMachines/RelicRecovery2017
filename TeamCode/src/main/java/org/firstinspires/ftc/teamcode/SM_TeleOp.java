@@ -37,9 +37,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import static android.os.SystemClock.sleep;
-
-
 /**
  * FTC ENDEAVOR STEAM MACHINE SM_Robot Controller TeleOpMode
  * <p>
@@ -86,17 +83,13 @@ public class SM_TeleOp extends OpMode {
     private Servo right_glyph_servo = null;
     //  timer
     private ElapsedTime runtime = new ElapsedTime();
-    //  variables used by all methods in this class
-//    static int LIFTER_MIN_POS = 100;
-//    static int LIFTER_MAX_POS = 6000;
-//    static double LIFTER_IDLE = 0.01;
-    static float JOYSTICK_DEADZONE = 0.2f;
+
+    //  constants used by all methods in this class
+    static double JOYSTICK_DEADZONE = 0.2;
     static double LEFT_SERVO_OPEN = 0.70;
     static double RIGHT_SERVO_OPEN = 0.30;
     static double LEFT_SERVO_CLOSED = 0.95;
     static double RIGHT_SERVO_CLOSED = 0.05;
-    double rightServoPos;
-    double leftServoPos;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -111,40 +104,32 @@ public class SM_TeleOp extends OpMode {
         //
         // motors
         left_motor = hardwareMap.get(DcMotor.class, "left_motor");
-        left_motor.setDirection(DcMotor.Direction.FORWARD);
+        left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        left_motor.setDirection(DcMotor.Direction.FORWARD);
+        left_motor.setPower(0);
 
         right_motor = hardwareMap.get(DcMotor.class, "right_motor");
-        right_motor.setDirection(DcMotor.Direction.REVERSE);
+        right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        right_motor.setDirection(DcMotor.Direction.REVERSE);
+        right_motor.setPower(0);
 
         lifter_motor = hardwareMap.get(DcMotor.class, "lifter_motor");
         lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lifter_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lifter_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lifter_motor.setDirection(DcMotor.Direction.REVERSE);
+        lifter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lifter_motor.setPower(0);
-
-        // initialize deadzone values for joysticks
-//        gamepad1.setJoystickDeadzone(JOYSTICK_DEADZONE);
-//        gamepad2.setJoystickDeadzone(JOYSTICK_DEADZONE);
-
-        // move lifter to down position???
-//        lifter_motor.setTargetPosition(LIFTER_MIN_POS); // or -6000?
-//        runtime.reset();
-//        lifter_motor.setPower(-0.5);
-//        while (lifter_motor.isBusy() && runtime.seconds() < 3) {
-//            telemetry.addData("Status", "resetting lifter position");
-//        }
-//        lifter_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        lifter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // servos
         left_glyph_servo = hardwareMap.get(Servo.class, "left_glyph_servo");
         left_glyph_servo.setDirection(Servo.Direction.FORWARD);
-//        left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
+        left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
+
         right_glyph_servo = hardwareMap.get(Servo.class, "right_glyph_servo");
         right_glyph_servo.setDirection(Servo.Direction.FORWARD);
-//        right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
+        right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
 
         // let drivers know that initialization has finished
         telemetry.addData("Status", "Initialized");
@@ -195,7 +180,6 @@ public class SM_TeleOp extends OpMode {
         //    left_stick_y (up and down) controls lifter up and down
         double lift = -gamepad2.left_stick_y; // make positive up
         double lifterPower = Range.clip(lift, -1.0, 1.0);
-        int lifter_pos = lifter_motor.getCurrentPosition();
 
         if (lifterPower < -JOYSTICK_DEADZONE)
             lifter_motor.setPower(lifterPower);
@@ -204,63 +188,46 @@ public class SM_TeleOp extends OpMode {
         else
             lifter_motor.setPower(0);
 
-//        //set parameters for lifter_motor
-//        if (lifterPower > JOYSTICK_DEADZONE) // joystick positive => up
-//            if (lifter_pos < LIFTER_MAX_POS)
-//                lifter_motor.setPower(lifterPower);
-//            else
-//                lifter_motor.setPower(LIFTER_IDLE);
-//        else if (lifterPower < -JOYSTICK_DEADZONE) //joystick negative => down
-//            if (lifter_pos > LIFTER_MIN_POS)
-//                lifter_motor.setPower(lifterPower);
-//            else
-//                lifter_motor.setPower(0);
-//        else
-//            lifter_motor.setPower(LIFTER_IDLE);
+/*
+        // this is the old code that set limits of lifter (NOTE: RUN USING ENCODERS)
+        //set parameters for lifter_motor
+        static int LIFTER_MIN_POS = 100;
+        static int LIFTER_MAX_POS = 6000;
+        static double LIFTER_IDLE = 0.01;
+        int lifter_pos = lifter_motor.getCurrentPosition();
+        if (lifterPower > JOYSTICK_DEADZONE) // joystick positive => up
+            if (lifter_pos < LIFTER_MAX_POS)
+                lifter_motor.setPower(lifterPower);
+            else
+                lifter_motor.setPower(LIFTER_IDLE);
+        else if (lifterPower < -JOYSTICK_DEADZONE) //joystick negative => down
+            if (lifter_pos > LIFTER_MIN_POS)
+                lifter_motor.setPower(lifterPower);
+            else
+                lifter_motor.setPower(0);
+        else
+            lifter_motor.setPower(LIFTER_IDLE);
+        */
 
-        // ** glyph servo **
+        // ** glyph servos **
         //    buttons X and B will open or close the grabber servos
-        rightServoPos = right_glyph_servo.getPosition();
-        leftServoPos = left_glyph_servo.getPosition();
-
         if (gamepad2.x) {
             right_glyph_servo.setPosition(RIGHT_SERVO_OPEN);
             left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
-
-//            rightServoPos = rightServoPos - 0.1;
-//            rightServoPos = Range.clip(rightServoPos, 0, 1);
-//            right_glyph_servo.setPosition(rightServoPos);
-//
-//            leftServoPos = leftServoPos + 0.1;
-//            leftServoPos = Range.clip(leftServoPos, 0, 1);
-//            left_glyph_servo.setPosition(leftServoPos);
-//            sleep(500);//gives driver 1 sec to let go of button
-//  //          1000 ms = 1 sec : 500 ms = 0.5 (1/2) sec
-
         } else if (gamepad2.b) {
             right_glyph_servo.setPosition(RIGHT_SERVO_CLOSED);
             left_glyph_servo.setPosition(LEFT_SERVO_CLOSED);
-
-//            rightServoPos = rightServoPos + 0.1;
-//            rightServoPos = Range.clip(rightServoPos, 0, 1);
-//            right_glyph_servo.setPosition(rightServoPos);
-//
-//            leftServoPos = leftServoPos - 0.1;
-//            leftServoPos = Range.clip(leftServoPos, 0, 1);
-//            left_glyph_servo.setPosition(leftServoPos);
-//            sleep(500);//gives driver 1 sec to let go of button
-
         }
+
         // Telemetry: show elapsed time, wheel power, lifter motor, and servo status
         // This can be whatever we want it to be.  We want info that helps the operators.
         //telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Runtime", "(%.2f)", runtime.milliseconds() / 1000); // ?? will this work ??
+        telemetry.addData("Runtime", "(%.2f)", runtime.milliseconds() / 1000);
         telemetry.addData("Left Drive Motor", "(%.2f)", leftPower);
         telemetry.addData("Right Drive Motor", "(%.2f)", rightPower);
         telemetry.addData("Lifter Motor Power", "(%.2f)", lifterPower);
-        telemetry.addData("Lifter Motor Position", lifter_pos);
-        telemetry.addData("Left Servo Position", "(%.2f)", leftServoPos);
-        telemetry.addData("Right Servo Position", "(%.2f)", rightServoPos);
+        telemetry.addData("Left Servo Position", "(%.2f)", left_glyph_servo.getPosition());
+        telemetry.addData("Right Servo Position", "(%.2f)", right_glyph_servo.getPosition());
         telemetry.update();
     }
 
@@ -272,5 +239,4 @@ public class SM_TeleOp extends OpMode {
         telemetry.addData("Status", "STOP has been pressed");
         telemetry.update();
     }
-
 }
