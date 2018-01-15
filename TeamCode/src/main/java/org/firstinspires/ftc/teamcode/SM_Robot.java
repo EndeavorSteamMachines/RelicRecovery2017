@@ -291,7 +291,7 @@ public class SM_Robot {
                 default:
                     d_vertical = D_CENTER;
             }
-            //movement from B1 to align in front of crypt
+            //movement from R1 to align in front of crypt
             DriveStraight(-6, d_vertical, d_vertical, 7);
             //turn to face crypt
             DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
