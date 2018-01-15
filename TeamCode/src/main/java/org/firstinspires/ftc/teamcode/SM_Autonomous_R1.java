@@ -62,9 +62,9 @@ public class SM_Autonomous_R1 extends LinearOpMode {
 //        }
 
         SM_Robot robot = new SM_Robot(hardwareMap, telemetry);
-        RelicRecoveryVuMark cryptoKey;
+        RelicRecoveryVuMark cryptoKey = RelicRecoveryVuMark.CENTER;
 
-        cryptoKey = robot.Task1();
+//        cryptoKey = robot.Task1();
 //        robot.Task2(startingColor);
         robot.Task3(startingPosition, cryptoKey);
 

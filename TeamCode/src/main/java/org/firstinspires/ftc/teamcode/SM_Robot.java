@@ -107,7 +107,7 @@ public class SM_Robot {
     double D_CENTER = 36; // distance from center of pad to center of CENTER crypt
     double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     double D_LEFT = D_CENTER + CRYPT_WIDTH;
-    double D_HORIZONTAL = 24 - (9 + 4); //inches, distance to wall - (half of robot + 2/3 of glyph)
+    double D_HORIZONTAL = 24 - (16 + 4); //inches, distance to wall - (half of robot + 2/3 of glyph)
     double WHEELBASE = 16; //inches, from wheel to wheel
     double TURN_CIRC = 3.1415 * (WHEELBASE); // inches, circumference = pi * diameter
     double QUARTER_TURN = (TURN_CIRC) / 4; //inches, 1/4 of circumference
@@ -269,7 +269,22 @@ public class SM_Robot {
 
 
         } else if (startPos == SM_StartCodes.Position.B2) {
-            //@TODO drive B2
+            double d_vertical;
+            switch (cryptoKey) {
+                case LEFT:
+                    d_vertical = D_LEFT;
+                case RIGHT:
+                    d_vertical = D_RIGHT;
+                default:
+                    d_vertical = D_CENTER;
+            }
+            //movement from B1 to align in front of crypt
+            DriveStraight(-0.6, d_vertical, d_vertical, 8);
+            //turn to face crypt
+            DriveStraight(0.3, -QUARTER_TURN, QUARTER_TURN, 4);
+            //drive to crypt
+            DriveStraight(0.4, D_HORIZONTAL, D_HORIZONTAL, 4);
+
 
         } else if (startPos == SM_StartCodes.Position.R1) {
             //@TODO drive R1
