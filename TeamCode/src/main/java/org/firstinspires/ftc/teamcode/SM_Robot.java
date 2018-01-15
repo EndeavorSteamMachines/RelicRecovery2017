@@ -270,6 +270,12 @@ public class SM_Robot {
 
         } else if (startPos == SM_StartCodes.Position.B2) {
 
+
+        } else if (startPos == SM_StartCodes.Position.R1) {
+            //@TODO drive R1
+
+        } else if (startPos == SM_StartCodes.Position.R2) {
+
             double d_vertical = 48 - 12;//balancing stone to wall - (half of robot + {a little less than glyph width} ) [inches]
 
             //movement from B2 to align in front of crypt
@@ -278,12 +284,6 @@ public class SM_Robot {
             DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
             //drive to crypt
             DriveStraight(2, 11.44, 11.44, 3);
-
-        } else if (startPos == SM_StartCodes.Position.R1) {
-            //@TODO drive R1
-
-        } else if (startPos == SM_StartCodes.Position.R2) {
-            //@TODO drive R2
 
         }
 
