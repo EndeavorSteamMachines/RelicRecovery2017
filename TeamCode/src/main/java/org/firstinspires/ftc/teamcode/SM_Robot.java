@@ -107,7 +107,9 @@ public class SM_Robot {
     double D_CENTER = 36; // distance from center of pad to center of CENTER crypt
     double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     double D_LEFT = D_CENTER + CRYPT_WIDTH;
-    double D_HORIZONTAL = 24 - (16 + 4); //inches, distance to wall - (half of robot + 2/3 of glyph)
+    double LENGTH_ROBOT_WITH_GLYPH = 16+6; // inches, note that glyph extends 4 inches past robot
+    double D_HORIZONTAL_R1B1 = 24-LENGTH_ROBOT_WITH_GLYPH; //inches, distance to wall
+    double D_HORIZONTAL_R2B2 = 48-LENGTH_ROBOT_WITH_GLYPH; //inches, distance to wall
     double WHEELBASE = 16; //inches, from wheel to wheel
     double TURN_CIRC = 3.1415 * (WHEELBASE); // inches, circumference = pi * diameter
     double QUARTER_TURN = (TURN_CIRC) / 4; //inches, 1/4 of circumference
@@ -261,19 +263,19 @@ public class SM_Robot {
                     d_vertical = D_CENTER;
             }
             //movement from B1 to align in front of crypt
-            DriveStraight(2, d_vertical, d_vertical, 7);
+            DriveStraight(5, d_vertical, d_vertical, 7);
             //turn to face crypt
             DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
             //drive to crypt
-            DriveStraight(2, D_HORIZONTAL, D_HORIZONTAL, 3);
+            DriveStraight(2, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
 
 
         } else if (startPos == SM_StartCodes.Position.B2) {
 
-            double d_vertical = 48 - 12;//balancing stone to wall - (half of robot + {a little less than glyph width} ) [inches]
+            double d_vertical = D_HORIZONTAL_R2B2;
 
             //movement from B2 to align in front of crypt
-            DriveStraight(2, d_vertical, d_vertical, 8);
+            DriveStraight(2, d_vertical, d_vertical, 7);
             //turn to face crypt
             DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
             //drive to crypt
@@ -292,15 +294,15 @@ public class SM_Robot {
                     d_vertical = D_CENTER;
             }
             //movement from R1 to align in front of crypt
-            DriveStraight(-6, d_vertical, d_vertical, 7);
+            DriveStraight(-5, d_vertical, d_vertical, 7);
             //turn to face crypt
             DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
             //drive to crypt
-            DriveStraight(2, D_HORIZONTAL, D_HORIZONTAL, 3);
+            DriveStraight(2, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
 
         } else if (startPos == SM_StartCodes.Position.R2) {
 
-            double d_vertical = 48 - 12;//balancing stone to wall - (half of robot + {a little less than glyph width} ) [inches]
+            double d_vertical = D_HORIZONTAL_R2B2;
 
             //movement from B2 to align in front of crypt
             DriveStraight(2, d_vertical, d_vertical, 8);
