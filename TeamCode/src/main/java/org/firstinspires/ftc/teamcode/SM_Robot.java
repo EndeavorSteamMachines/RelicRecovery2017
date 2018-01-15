@@ -107,7 +107,7 @@ public class SM_Robot {
     double D_CENTER = 36; // distance from center of pad to center of CENTER crypt
     double D_RIGHT = D_CENTER - CRYPT_WIDTH;
     double D_LEFT = D_CENTER + CRYPT_WIDTH;
-    double LENGTH_ROBOT_WITH_GLYPH = 16+6; // inches, note that glyph extends 4 inches past robot
+    double LENGTH_ROBOT_WITH_GLYPH = 18 + 4 - 2; // inches, note that glyph extends 4 inches past robot
     double D_HORIZONTAL_R1B1 = 24-LENGTH_ROBOT_WITH_GLYPH; //inches, distance to wall
     double D_HORIZONTAL_R2B2 = 48-LENGTH_ROBOT_WITH_GLYPH; //inches, distance to wall
     double WHEELBASE = 16; //inches, from wheel to wheel
@@ -249,6 +249,8 @@ public class SM_Robot {
         lifter_motor.setPower(0);
 
         // robot will start in 1 of 4 positions: B1, B2, R1, R2
+
+        // B1 starting position
         if (startPos == SM_StartCodes.Position.B1) {
 
             // set vertical distance to travel from center of balancing stone
@@ -269,18 +271,22 @@ public class SM_Robot {
             //drive to crypt
             DriveStraight(2, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
 
-
+            // B2 starting position
         } else if (startPos == SM_StartCodes.Position.B2) {
 
-            double d_vertical = D_HORIZONTAL_R2B2;
-
-            //movement from B2 to align in front of crypt
-            DriveStraight(2, d_vertical, d_vertical, 7);
-            //turn to face crypt
-            DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
-            //drive to crypt
+            double d_vertical = 26;
+            // movement from B2 to get bot off of balancing stone
+            DriveStraight(4, d_vertical, d_vertical, 7);
+            // left turn
+            DriveStraight(2, QUARTER_TURN, -QUARTER_TURN, 5);
+            // align to crypt
             DriveStraight(2, 11.44, 11.44, 3);
+            // turn toward crypt
+            DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
+            // move to crypt
+            DriveStraight(1, 2, 2, 3);
 
+            // R1 starting position
         } else if (startPos == SM_StartCodes.Position.R1) {
             // set vertical distance to travel from center of balancing stone
             // to center of selected crypto column
@@ -300,6 +306,7 @@ public class SM_Robot {
             //drive to crypt
             DriveStraight(2, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
 
+            // R2 starting position
         } else if (startPos == SM_StartCodes.Position.R2) {
 
             double d_vertical = D_HORIZONTAL_R2B2;
