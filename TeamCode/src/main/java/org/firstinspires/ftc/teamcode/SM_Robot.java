@@ -85,10 +85,10 @@ public class SM_Robot {
     ElapsedTime runtime = new ElapsedTime();
     // constants for this class
     // constants for glyph servos
-    double LEFT_SERVO_OPEN = 0.70;
-    double RIGHT_SERVO_OPEN = 0.30;
-    double LEFT_SERVO_CLOSED = 0.95;
-    double RIGHT_SERVO_CLOSED = 0.05;
+    static double RIGHT_SERVO_OPEN = 0.20;
+    static double RIGHT_SERVO_CLOSED = 0.00;
+    static double LEFT_SERVO_OPEN = 0.8;
+    static double LEFT_SERVO_CLOSED = 0.6;
     // constants for lifter
     int LIFTER_POS_RAISE_GLYPH = 1000;
     // constants for gem servos
@@ -253,70 +253,74 @@ public class SM_Robot {
         // B1 starting position
         if (startPos == SM_StartCodes.Position.B1) {
 
-            // set vertical distance to travel from center of balancing stone
-            // to center of selected crypto column
-            double d_vertical;
-            switch (cryptoKey) {
-                case LEFT:
-                    d_vertical = D_LEFT;
-                case RIGHT:
-                    d_vertical = D_RIGHT;
-                default:
-                    d_vertical = D_CENTER;
-            }
-            //movement from B1 to align in front of crypt
-            DriveStraight(5, d_vertical, d_vertical, 7);
-            //turn to face crypt
-            DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
-            //drive to crypt
-            DriveStraight(2, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
+//            // set vertical distance to travel from center of balancing stone
+//            // to center of selected crypto column
+//            double d_vertical;
+//            switch (cryptoKey) {
+//                case LEFT:
+//                    d_vertical = D_LEFT;
+//                case RIGHT:
+//                    d_vertical = D_RIGHT;
+//                default:
+//                    d_vertical = D_CENTER;
+//            }
+//            //movement from B1 to align in front of crypt
+//            DriveInches(2, d_vertical, d_vertical, 7);
+//            //turn to face crypt
+//            DriveInches(1, -QUARTER_TURN, QUARTER_TURN, 5);
+//            //drive to crypt
+//            DriveInches(1, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
+            DriveInches(2, D_CENTER, D_CENTER, 6);
 
             // B2 starting position
         } else if (startPos == SM_StartCodes.Position.B2) {
 
-            double d_vertical = 26;
-            // movement from B2 to get bot off of balancing stone
-            DriveStraight(4, d_vertical, d_vertical, 7);
-            // left turn
-            DriveStraight(2, QUARTER_TURN, -QUARTER_TURN, 5);
-            // align to crypt
-            DriveStraight(2, 11.44, 11.44, 3);
-            // turn toward crypt
-            DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
-            // move to crypt
-            DriveStraight(1, 2, 2, 3);
+//            double d_vertical = 26;
+//            // movement from B2 to get bot off of balancing stone
+//            DriveInches(4, d_vertical, d_vertical, 7);
+//            // left turn
+//            DriveInches(2, QUARTER_TURN, -QUARTER_TURN, 5);
+//            // align to crypt
+//            DriveInches(2, 11.44, 11.44, 3);
+//            // turn toward crypt
+//            DriveInches(2, -QUARTER_TURN, QUARTER_TURN, 5);
+//            // move to crypt
+//            DriveInches(1, 2, 2, 3);
+            DriveInches(2, D_CENTER, D_CENTER, 6);
 
             // R1 starting position
         } else if (startPos == SM_StartCodes.Position.R1) {
-            // set vertical distance to travel from center of balancing stone
-            // to center of selected crypto column
-            double d_vertical;
-            switch (cryptoKey) {
-                case LEFT:
-                    d_vertical = D_LEFT;
-                case RIGHT:
-                    d_vertical = D_RIGHT;
-                default:
-                    d_vertical = D_CENTER;
-            }
-            //movement from R1 to align in front of crypt
-            DriveStraight(-5, d_vertical, d_vertical, 7);
-            //turn to face crypt
-            DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
-            //drive to crypt
-            DriveStraight(2, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
+//            // set vertical distance to travel from center of balancing stone
+//            // to center of selected crypto column
+//            double d_vertical;
+//            switch (cryptoKey) {
+//                case LEFT:
+//                    d_vertical = D_LEFT;
+//                case RIGHT:
+//                    d_vertical = D_RIGHT;
+//                default:
+//                    d_vertical = D_CENTER;
+//            }
+//            //movement from R1 to align in front of crypt
+//            DriveInches(-5, d_vertical, d_vertical, 7);
+//            //turn to face crypt
+//            DriveInches(2, -QUARTER_TURN, QUARTER_TURN, 5);
+//            //drive to crypt
+//            DriveInches(2, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
+            DriveInches(2, D_CENTER, D_CENTER, 6);
+//            //R2 starting position
+       } else if (startPos == SM_StartCodes.Position.R2) {
 
-            // R2 starting position
-        } else if (startPos == SM_StartCodes.Position.R2) {
+//            double d_vertical = D_HORIZONTAL_R2B2;
+//
+//            //movement from B2 to align in front of crypt
+//            DriveInches(2, d_vertical, d_vertical, 8);
+//            //turn to face crypt
+//            DriveInches(2, -QUARTER_TURN, QUARTER_TURN, 5);
+//            //drive to crypt
+//            DriveInches(2, 11.44, 11.44, 3);
+            DriveInches(2, D_CENTER, D_CENTER, 6);
 
-            double d_vertical = D_HORIZONTAL_R2B2;
-
-            //movement from B2 to align in front of crypt
-            DriveStraight(2, d_vertical, d_vertical, 8);
-            //turn to face crypt
-            DriveStraight(2, -QUARTER_TURN, QUARTER_TURN, 5);
-            //drive to crypt
-            DriveStraight(2, 11.44, 11.44, 3);
 
         }
 
@@ -325,15 +329,15 @@ public class SM_Robot {
         left_glyph_servo.setPosition(LEFT_SERVO_OPEN);
 
         //backup 1 inch
-        DriveStraight(-3, 1, 1, 2);
+        DriveInches(-3, 1, 1, 2);
 
         telemetry.addData("Status", "Task 3 complete");
         telemetry.update();
     } // end of Task3
 
 
-    // method DriveStraight
-    public void DriveStraight(double speed, double leftInches, double rightInches, double timeoutS) {
+    // method DriveInches
+    public void DriveInches(double speed, double leftInches, double rightInches, double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
 
@@ -362,6 +366,6 @@ public class SM_Robot {
         right_motor.setPower(0);
 
 
-    } // end of DriveStraight
+    } // end of DriveInches
 
 } // end of class (no code beyond this point)
