@@ -270,7 +270,8 @@ public class SM_Robot {
 //            DriveInches(1, -QUARTER_TURN, QUARTER_TURN, 5);
 //            //drive to crypt
 //            DriveInches(1, D_HORIZONTAL_R1B1, D_HORIZONTAL_R1B1, 3);
-            DriveInches(2, D_CENTER, D_CENTER, 6);
+
+            DriveInches(2, D_CENTER, D_CENTER, 5);
 
             // B2 starting position
         } else if (startPos == SM_StartCodes.Position.B2) {
@@ -286,6 +287,7 @@ public class SM_Robot {
 //            DriveInches(2, -QUARTER_TURN, QUARTER_TURN, 5);
 //            // move to crypt
 //            DriveInches(1, 2, 2, 3);
+            DriveInches(1, 0,3, 4);
             DriveInches(2, D_CENTER, D_CENTER, 6);
 
             // R1 starting position
@@ -319,6 +321,7 @@ public class SM_Robot {
 //            DriveInches(2, -QUARTER_TURN, QUARTER_TURN, 5);
 //            //drive to crypt
 //            DriveInches(2, 11.44, 11.44, 3);
+            DriveInches(2, 3,0, 4);
             DriveInches(2, D_CENTER, D_CENTER, 6);
 
 

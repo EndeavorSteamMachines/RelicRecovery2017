@@ -28,23 +28,22 @@
  */
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
- * FTC ENDEAVOR STEAM MACHINE Robot Controller Autonomous Mode B1
+ * FTC ENDEAVOR STEAM MACHINE Robot Controller Autonomous Mode R1
  * <p>
- * Autonomous code for when robot is in starting position B1.
- * This is the blue balancing stone closest to the relic recovery zone.
+ * Autonomous code for when robot is in starting position R1.
+ * This is the red balancing stone closest to the relic recovery zone.
  **/
 
-@Autonomous(name = "Autonomous B1", group = "Autonomous")
+@Autonomous(name = "Autonomous B2", group = "Autonomous")
 //@Disabled
-public class SM_Autonomous_B1 extends LinearOpMode {
+public class SM_Autonomous_B2 extends LinearOpMode {
     // Constructor: instantiate objects used in this class.
-    SM_StartCodes.Position startingPosition = SM_StartCodes.Position.B1;
+    SM_StartCodes.Position startingPosition = SM_StartCodes.Position.B2;
     SM_StartCodes.Color startingColor = SM_StartCodes.Color.Blue;
 
     @Override
@@ -54,7 +53,6 @@ public class SM_Autonomous_B1 extends LinearOpMode {
         waitForStart();
         telemetry.addData("Status", "PLAY has been pressed");
         telemetry.update();
-
         // another option for waiting?
 //        while (!(isStarted() || isStopRequested())) {
 //            telemetry.addData("Status", "Waiting for start");
@@ -63,12 +61,13 @@ public class SM_Autonomous_B1 extends LinearOpMode {
 //        }
 
         SM_Robot robot = new SM_Robot(hardwareMap, telemetry);
-        RelicRecoveryVuMark cryptoKey;
+        RelicRecoveryVuMark cryptoKey = RelicRecoveryVuMark.CENTER;
 
 //        cryptoKey = robot.Task1();
-//        robot.Task2(startingColor);  // need HW!
-        robot.Task3(startingPosition, RelicRecoveryVuMark.CENTER);
+//        robot.Task2(startingColor);
+        robot.Task3(startingPosition, cryptoKey);
 
     }
+
 
 } // end of class (no code beyond this point)
